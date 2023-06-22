@@ -16,9 +16,8 @@ export default function Home() {
       </Head>
       <Main>
         <Header />
-        <ContentContainer>
-          <Content />
-        </ContentContainer>
+        <MainTitle>Superpower your embeddings</MainTitle>
+        <Content />
         <Footer />
       </Main>
     </>
@@ -34,9 +33,11 @@ const Main = tw.main`
   to-[#120F42]
 `;
 
-const ContentContainer = tw.div`
-  flex 
-  flex-grow 
-  items-center 
-  justify-center
+const MainTitle = tw.h1`
+    text-2xl
+    text-white
+    font-bold
+    mb-12
+    text-center
+    w-full
 `;

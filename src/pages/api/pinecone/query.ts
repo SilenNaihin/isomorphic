@@ -1,29 +1,28 @@
-import { type NextApiRequest, type NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import { PineconeClient } from "@pinecone-database/pinecone";
 
-const pinecone = new PineconeClient();
-
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  await pinecone.init({
-    environment: process.env.PINECONE_ENV as string,
-    apiKey: process.env.PINECONE_API_KEY as string,
-  });
+  const { apiKey, environment, vector, indexName } = req.body;
 
   if (req.method === "POST") {
+    if (!apiKey || !environment || !vector || !indexName) {
+      return res.status(400).json({ error: "Required parameters missing." });
+    }
+
     try {
-      console.log(req.body);
-      // Vector received from client
-      const queryVector: number[] = req.body.vector;
-
-      console.log(queryVector);
-
-      const index = pinecone.Index(process.env.PINECONE_INDEX_NAME as string);
-
-      const queryResponse = await index.query({
-        queryRequest: { vector: queryVector, topK: 3, includeValues: true },
+      const pinecone = new PineconeClient();
+      await pinecone.init({
+        environment,
+        apiKey,
       });
 
-      return res.status(200).json({ queries: queryResponse });
+      const index = pinecone.Index(indexName);
+
+      const queryResponse = await index.query({
+        queryRequest: { vector, topK: 10000, includeValues: true },
+      });
+
+      return res.status(200).json({ queries: queryResponse.matches });
     } catch (err: any) {
       console.error(err);
       return res.status(500).json({ error: err.message });
