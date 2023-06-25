@@ -1,5 +1,4 @@
 import json
-import json
 import numpy as np
 from sklearn.decomposition import PCA
 
@@ -19,11 +18,6 @@ def dim_reduce(request):
         }
         return response
     print(vec_list)
-    vec = vec_list[0]
-    print(vec)
-    print(type(vec))
-    print(len(vec))
-    print(type(vec[0]))
     X = np.array(vec_list)
     pca = PCA(n_components=3) # 3D projection
     X_reduced = pca.fit_transform(X)
