@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { type NextApiRequest, type NextApiResponse } from "next";
 import { PineconeClient } from "@pinecone-database/pinecone";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

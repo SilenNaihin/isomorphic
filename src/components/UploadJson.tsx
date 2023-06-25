@@ -86,11 +86,12 @@ const UploadJson: React.FC<UploadJsonProps> = ({
 
   return (
     <>
-      <DropZoneContainer {...getRootProps()}>
+      <DropZoneContainer className="cursor-pointer" {...getRootProps()}>
         <input {...getInputProps()} />
         <FlexBox>
           <Text>Drop a JSON file here, or click to select one </Text>
           <Formats
+            data-tip
             data-tooltip-content={`.json file must be formatted as 
             data: [strings] |
             data: [{role: '', content: ''}] |

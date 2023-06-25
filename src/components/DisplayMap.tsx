@@ -1,14 +1,15 @@
 import React from "react";
-import Plot from "react-plotly.js";
+import dynamic from "next/dynamic";
+const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 interface DisplayMapProps {
   embeddings: number[][];
 }
 
 export const DisplayMap: React.FC<DisplayMapProps> = ({ embeddings }) => {
-  const x = embeddings.filter((_, index) => index % 3 === 0);
-  const y = embeddings.filter((_, index) => index % 3 === 1);
-  const z = embeddings.filter((_, index) => index % 3 === 2);
+  const x = [0.2, 0.15, 0.67];
+  const y = [0.3, 0.25, 0.77];
+  const z = [0.4, 0.35, 0.87];
 
   const data = [
     {
@@ -34,7 +35,13 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({ embeddings }) => {
 
   const layout = {
     autosize: true,
-    height: 480,
+    margin: {
+      l: 0, // left margin
+      r: 0, // right margin
+      b: 0, // bottom margin
+      t: 0, // top margin
+      pad: 0, // padding
+    },
     scene: {
       aspectratio: {
         x: 1,
@@ -71,9 +78,17 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({ embeddings }) => {
         zeroline: false,
       },
     },
-    title: "3d point clustering",
-    width: 477,
   };
 
-  return <Plot data={data as any[]} layout={layout as any} />;
+  return (
+    <div className="h-64 w-64">
+      <Plot
+        data={data as any[]}
+        layout={layout as any}
+        style={{ width: "100%", height: "100%" }}
+      />
+    </div>
+  );
 };
+
+export default DisplayMap;

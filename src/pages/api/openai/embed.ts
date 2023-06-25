@@ -14,6 +14,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const texts: string[] = req.body.texts;
 
+      console.log(texts);
+
       const splitter = new RecursiveCharacterTextSplitter({
         chunkSize: 300,
         chunkOverlap: 20,

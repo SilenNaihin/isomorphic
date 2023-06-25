@@ -1,12 +1,29 @@
 import Head from "next/head";
-import Link from "next/link";
+import { type NextPage, type GetServerSideProps } from "next";
+import axios from "axios";
 
 import tw from "tailwind-styled-components";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Content from "../components/Content";
 
-export default function Home() {
+export interface VectorData {
+  id: string;
+  score: number;
+  values: number[];
+  sparseValues?: {
+    indices?: number[];
+    values?: number[];
+  };
+  metadata?: object;
+}
+
+export interface ContentProps {
+  vectors: VectorData[];
+  tempQueryVector: number[];
+}
+
+const Home: NextPage<ContentProps> = ({ vectors, tempQueryVector }) => {
   return (
     <>
       <Head>
@@ -17,12 +34,52 @@ export default function Home() {
       <Main>
         <Header />
         <MainTitle>Superpower your embeddings</MainTitle>
-        <Content />
+        <Content vectors={vectors} tempQueryVector={tempQueryVector} />
         <Footer />
       </Main>
     </>
   );
-}
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const randomStringToEmbed = "How was your day yesterday?";
+
+  console.log(randomStringToEmbed);
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  const embeddedString = await axios.post(`${apiUrl}/openai/embed`, {
+    texts: [randomStringToEmbed],
+  });
+
+  const vector: number[] = embeddedString.data.vectors[0];
+
+  // Make your POST request
+  const res = await axios.post(`${apiUrl}/pinecone/query`, {
+    apiKey: process.env.PINECONE_API_KEY,
+    environment: process.env.PINECONE_ENV,
+    vector,
+    indexName: process.env.PINECONE_INDEX_NAME,
+  });
+
+  // Check for errors
+  if (res.status !== 200) {
+    throw new Error(res.statusText);
+  }
+
+  // Extract the query data from the response
+  const queryData = res.data.queries;
+
+  // Return the queryData as a prop
+  return {
+    props: {
+      vectors: queryData,
+      tempQueryVector: vector,
+    },
+  };
+};
+
+export default Home;
 
 const Main = tw.main`
   flex 

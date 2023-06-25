@@ -62,4 +62,5 @@ const Button = tw.button`
     bg-[#1B17F5]
     hover:bg-[#030080]
     rounded-lg
+    mt-1
 `;
