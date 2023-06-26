@@ -46,18 +46,21 @@ const Home: NextPage<ContentProps> = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const baseUrl =
+    process.env.NODE_ENV === "production"
+      ? "https://isomorphic-alpha.vercel.app"
+      : "http://localhost:3000";
+
   const randomStringToEmbed = "How was your day yesterday?";
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-  const embeddedString = await axios.post(`${apiUrl}/openai/embed`, {
+  const embeddedString = await axios.post(`${baseUrl}/api/openai/embed`, {
     texts: [randomStringToEmbed],
   });
 
   const vector: number[] = embeddedString.data.vectors[0];
 
   // Make your POST request
-  const res = await axios.post(`${apiUrl}/pinecone/query`, {
+  const res = await axios.post(`${baseUrl}/api/pinecone/query`, {
     apiKey: process.env.PINECONE_API_KEY,
     environment: process.env.PINECONE_ENV,
     vector,
