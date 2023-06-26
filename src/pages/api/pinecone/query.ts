@@ -2,11 +2,17 @@ import { type NextApiRequest, type NextApiResponse } from "next";
 import { PineconeClient, type ScoredVector } from "@pinecone-database/pinecone";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { apiKey, environment, vector, indexName } = req.body;
+  let { apiKey, environment, indexName } = req.body;
+  const { vector } = req.body;
 
   if (req.method === "POST") {
-    if (!apiKey || !environment || !vector || !indexName) {
+    if (!vector) {
       return res.status(400).json({ error: "Required parameters missing." });
+    }
+    if (!apiKey || !environment || !indexName) {
+      apiKey = process.env.PINECONE_API_KEY;
+      environment = process.env.PINECONE_ENV;
+      indexName = process.env.PINECONE_INDEX_NAME;
     }
 
     try {
@@ -19,7 +25,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const index = pinecone.Index(indexName);
 
       const queryResponse = await index.query({
-        queryRequest: { vector, topK: 10000, includeValues: true },
+        queryRequest: {
+          vector,
+          topK: 10000,
+          includeValues: true,
+          includeMetadata: true,
+        },
       });
 
       const vectorMatches: ScoredVector[] | undefined = queryResponse.matches;

@@ -1,8 +1,8 @@
-import React from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 import { type ScoredVector } from "@pinecone-database/pinecone";
-
+import tw from "tailwind-styled-components";
 import { Text } from "~/styles/css";
 
 interface DisplayMapProps {
@@ -16,14 +16,18 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
   fullEmbeddings,
   graphLoading,
 }) => {
-  console.log(fullEmbeddings[1]);
+  const [includeMetadata, setIncludeMetadata] = useState<boolean>(false);
+
   const x = embeddings.map((subArray) => subArray[0]);
   const y = embeddings.map((subArray) => subArray[1]);
   const z = embeddings.map((subArray) => subArray[2]);
   const hoverText = fullEmbeddings.map((vector) => {
     let hoverStr = `id: ${vector.id}<br>score: ${vector.score}`;
-    if (vector.metadata) {
-      hoverStr += `<br>metadata: ${JSON.stringify(vector.metadata)}`;
+    if (vector.metadata && includeMetadata) {
+      const metadataStr = Object.entries(vector.metadata)
+        .map(([key, value]) => `<br>${key}: ${value}`)
+        .join("");
+      hoverStr += `<br>metadata: ${metadataStr}`;
     }
     return hoverStr;
   });
@@ -100,7 +104,7 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
   };
 
   return (
-    <div className="flex h-64 w-64 items-center justify-center">
+    <GraphContainer>
       {graphLoading ? (
         <Text>Example Loading...</Text>
       ) : (
@@ -110,8 +114,20 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
           style={{ width: "100%", height: "100%" }}
         />
       )}
-    </div>
+      <CheckboxContainer onClick={() => setIncludeMetadata(!includeMetadata)}>
+        <input type="checkbox" checked={includeMetadata} />
+        <Text className="ml-1">Include metadata</Text>
+      </CheckboxContainer>
+    </GraphContainer>
   );
 };
 
 export default DisplayMap;
+
+const GraphContainer = tw.div`
+  flex h-64 w-64 flex-col items-start justify-center
+`;
+
+const CheckboxContainer = tw.div`
+  mt-2 flex
+`;

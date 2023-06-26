@@ -85,7 +85,7 @@ const UploadJson: React.FC<UploadJsonProps> = ({
   });
 
   return (
-    <>
+    <UploadContainer>
       <DropZoneContainer className="cursor-pointer" {...getRootProps()}>
         <input {...getInputProps()} />
         <FlexBox>
@@ -103,11 +103,19 @@ const UploadJson: React.FC<UploadJsonProps> = ({
         </FlexBox>
         <Text className="mt-2 text-red-500">{uploadStatus}</Text>
       </DropZoneContainer>
-    </>
+    </UploadContainer>
   );
 };
 
 export default UploadJson;
+
+const UploadContainer = tw.div`
+  w-1/3
+  flex
+  flex-col
+  items-center
+  justify-center
+`
 
 const DropZoneContainer = tw.div`
   flex

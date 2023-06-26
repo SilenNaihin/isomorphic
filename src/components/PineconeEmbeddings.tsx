@@ -24,7 +24,6 @@ const PineconeEmbeddings = () => {
         onChange={(e) => setEnv(e.target.value)}
       />
       <UserInput
-        type="password"
         placeholder="Index name"
         value={indexName}
         onChange={(e) => setIndexName(e.target.value)}
@@ -47,6 +46,8 @@ export default PineconeEmbeddings;
 const PineconeContainer = tw.div`
     flex
     flex-col
+    w-1/3
+    items-center
 `;
 
 const UserInput = tw.input`
@@ -63,4 +64,5 @@ const Button = tw.button`
     hover:bg-[#030080]
     rounded-lg
     mt-1
+    w-64
 `;

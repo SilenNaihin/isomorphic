@@ -32,7 +32,7 @@ const Content: React.FC<ContentProps> = ({
     if (vectors) {
       setTimeout(() => {
         setGraphLoading(false);
-      }, 1000);
+      }, 2000);
     }
   }, [vectors]);
 
