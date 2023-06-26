@@ -14,18 +14,25 @@ export interface ChatHistoryProps {
   content: string;
 }
 
-const Content: React.FC<ContentProps> = ({ vectors, tempQueryVector }) => {
-  const [oldEmbeddings, setOldEmbeddings] = useState<number[][]>([[]]);
+const Content: React.FC<ContentProps> = ({
+  vectors,
+  dataVectorArr,
+  tempQueryVector,
+}) => {
+  const [oldEmbeddings, setOldEmbeddings] = useState<number[][]>(dataVectorArr);
   const [newEmbeddings, setNewEmbeddings] = useState<number[][]>([[]]);
   const [uploadStatus, setUploadStatus] = useState<string>("");
 
   const [queryVector, setQueryVector] = useState<number[]>(tempQueryVector);
 
   const [metaLearned, setMetaLearned] = useState<boolean>(false);
+  const [graphLoading, setGraphLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (vectors) {
-      setNewEmbeddings(vectors.map((vector) => vector.values));
+      setTimeout(() => {
+        setGraphLoading(false);
+      }, 1000);
     }
   }, [vectors]);
 
@@ -46,8 +53,18 @@ const Content: React.FC<ContentProps> = ({ vectors, tempQueryVector }) => {
 
   return (
     <ContentContainer>
-      {metaLearned ? <DisplayMap embeddings={oldEmbeddings} /> : null}
-      <DisplayMap embeddings={newEmbeddings} />
+      <DisplayMap
+        fullEmbeddings={vectors}
+        embeddings={oldEmbeddings}
+        graphLoading={graphLoading}
+      />
+      {metaLearned ? (
+        <DisplayMap
+          fullEmbeddings={vectors}
+          embeddings={newEmbeddings}
+          graphLoading={graphLoading}
+        />
+      ) : null}
       <UploadContainer>
         <Chat />
         <PineconeEmbeddings />

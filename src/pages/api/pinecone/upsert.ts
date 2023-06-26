@@ -29,13 +29,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const output = await splitter.createDocuments(texts);
 
-      console.log(output);
-
       const pageContents = output.map((doc) => doc.pageContent);
 
       const documentRes = await embeddings.embedDocuments(pageContents);
-
-      console.log(documentRes);
 
       const vectors = documentRes.map((values) => ({
         id: uuidv4(), // This generates a unique ID

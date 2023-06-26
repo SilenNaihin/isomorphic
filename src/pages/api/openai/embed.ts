@@ -14,16 +14,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const texts: string[] = req.body.texts;
 
-      console.log(texts);
-
       const splitter = new RecursiveCharacterTextSplitter({
         chunkSize: 300,
         chunkOverlap: 20,
       });
 
       const output = await splitter.createDocuments(texts);
-
-      console.log(output);
 
       const pageContents = output.map((doc) => doc.pageContent);
 

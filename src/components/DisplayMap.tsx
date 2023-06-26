@@ -1,16 +1,32 @@
 import React from "react";
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
+import { type ScoredVector } from "@pinecone-database/pinecone";
+
+import { Text } from "~/styles/css";
 
 interface DisplayMapProps {
   embeddings: number[][];
+  fullEmbeddings: ScoredVector[];
+  graphLoading: boolean;
 }
 
-export const DisplayMap: React.FC<DisplayMapProps> = ({ embeddings }) => {
-  const x = [0.2, 0.15, 0.67];
-  const y = [0.3, 0.25, 0.77];
-  const z = [0.4, 0.35, 0.87];
-
+export const DisplayMap: React.FC<DisplayMapProps> = ({
+  embeddings,
+  fullEmbeddings,
+  graphLoading,
+}) => {
+  console.log(fullEmbeddings[1]);
+  const x = embeddings.map((subArray) => subArray[0]);
+  const y = embeddings.map((subArray) => subArray[1]);
+  const z = embeddings.map((subArray) => subArray[2]);
+  const hoverText = fullEmbeddings.map((vector) => {
+    let hoverStr = `id: ${vector.id}<br>score: ${vector.score}`;
+    if (vector.metadata) {
+      hoverStr += `<br>metadata: ${JSON.stringify(vector.metadata)}`;
+    }
+    return hoverStr;
+  });
   const data = [
     {
       x: x,
@@ -18,6 +34,9 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({ embeddings }) => {
       z: z,
       mode: "markers",
       type: "scatter3d",
+      hovertemplate:
+        "%{text}<br>x: %{x:.3f}, y: %{y:.3f}, z: %{z:.3f}<extra></extra>",
+      text: hoverText,
       marker: {
         color: "rgb(23, 190, 207)",
         size: 2,
@@ -81,12 +100,16 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({ embeddings }) => {
   };
 
   return (
-    <div className="h-64 w-64">
-      <Plot
-        data={data as any[]}
-        layout={layout as any}
-        style={{ width: "100%", height: "100%" }}
-      />
+    <div className="flex h-64 w-64 items-center justify-center">
+      {graphLoading ? (
+        <Text>Example Loading...</Text>
+      ) : (
+        <Plot
+          data={data as any[]}
+          layout={layout as any}
+          style={{ width: "100%", height: "100%" }}
+        />
+      )}
     </div>
   );
 };
