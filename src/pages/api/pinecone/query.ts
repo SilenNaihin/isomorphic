@@ -2,7 +2,7 @@ import { type NextApiRequest, type NextApiResponse } from "next";
 import { PineconeClient, type ScoredVector } from "@pinecone-database/pinecone";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  let { apiKey, environment, indexName } = req.body;
+  let { apiKey, environment, indexName, topK } = req.body;
   const { vector } = req.body;
 
   if (req.method === "POST") {
@@ -13,6 +13,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       apiKey = process.env.PINECONE_API_KEY;
       environment = process.env.PINECONE_ENV;
       indexName = process.env.PINECONE_INDEX_NAME;
+    }
+    if (!topK) {
+      topK = 50;
     }
 
     try {
@@ -27,7 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const queryResponse = await index.query({
         queryRequest: {
           vector,
-          topK: 50,
+          topK: topK,
           includeValues: true,
           includeMetadata: true,
         },

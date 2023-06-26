@@ -11,17 +11,18 @@ import { ChatHistoryProps } from "./Content";
 
 interface ChatProps {
   newQueryVector: (queryVector: number[], text: string) => void;
+  chatHistory: ChatHistoryProps[];
+  setChatHistory: React.Dispatch<React.SetStateAction<ChatHistoryProps[]>>;
+  setGraphLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Chat: React.FC<ChatProps> = ({ newQueryVector }) => {
+const Chat: React.FC<ChatProps> = ({
+  newQueryVector,
+  chatHistory,
+  setChatHistory,
+  setGraphLoading,
+}) => {
   const [userMessage, setUserMessage] = useState<string>("");
-  const [chatHistory, setChatHistory] = useState<ChatHistoryProps[]>([
-    { content: "How was your day yesterday?", role: "user" },
-    {
-      role: "assistant",
-      content: "The sun shone bright upon the golden hair, I spent it writing",
-    },
-  ]);
 
   const respondToChat = async () => {
     try {
@@ -78,7 +79,9 @@ ${historyContent}`,
             { role: "assistant", content: aiContent },
           ]);
 
+          // setGraphLoading(true);
           // newQueryVector(embUserMessageResponse.data.vectors[0], userMessage);
+          // setGraphLoading(false);
         } else {
           // Handle the case where the response does not contain the expected data
           console.error("Unexpected response format:", aiResponse);
@@ -97,7 +100,7 @@ ${historyContent}`,
         <Text className="bold">Fake chat with a William Shakespeare</Text>
         {chatHistory.map((msg, index) => (
           <ResponseText key={index}>
-            {msg.role === "user" ? "User: " : "Response: "} {msg.content}
+            <b>{msg.role === "user" ? "User: " : "Response: "}</b> {msg.content}
           </ResponseText>
         ))}
         <UserInput
@@ -107,7 +110,7 @@ ${historyContent}`,
           placeholder="Enter your message here"
           onKeyDown={(e) => {
             if (e.key == "Enter") {
-              respondToChat;
+              respondToChat();
             }
           }}
         />

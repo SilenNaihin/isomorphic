@@ -28,27 +28,60 @@ const Content: React.FC<ContentProps> = ({
   const [metaLearned, setMetaLearned] = useState<boolean>(false);
   const [graphLoading, setGraphLoading] = useState<boolean>(true);
 
+  const [env, setEnv] = useState<string>("");
+  const [apiKey, setApiKey] = useState<string>("");
+  const [indexName, setIndexName] = useState<string>("");
+  const [varsExist, setVarsExist] = useState<boolean>(false);
+
+  const [chatHistory, setChatHistory] = useState<ChatHistoryProps[]>([
+    { content: "How was your day yesterday?", role: "user" },
+    {
+      role: "assistant",
+      content: "The sun shone bright upon the golden hair, I spent it writing",
+    },
+  ]);
+
   const newQueryVector = async (queryVector: number[], text: string) => {
     try {
+      let res = null;
+      if (!varsExist) {
+        res = await axios.post(`/api/pinecone/query`, {
+          vector: queryVector,
+        });
+      } else {
+        res = await axios.post(`/api/pinecone/query`, {
+          apiKey: apiKey,
+          environment: env,
+          vector: queryVector,
+          indexName: indexName,
+        });
+      }
+
+      if (res.status !== 200) {
+        throw new Error(res.statusText);
+      }
+
+      // Extract the query data from the response
+      const { dataVectorArr } = res.data;
+
       const reducedVectors = await axios.post("/api/reduce", {
-        queryVector: queryVector,
+        queryVectors: [queryVector, ...dataVectorArr],
       });
 
       const reducedData = JSON.parse(reducedVectors.data.body);
+      const firstVector = reducedData.shift();
 
-      return { vector: reducedData[0], text: text };
+      setOldEmbeddings(reducedData);
+      setQueryVector({
+        vector: firstVector,
+        text: text,
+        fullVector: queryVector,
+      });
     } catch (error: any) {
       console.log(error);
+      setVarsExist(false);
     }
   };
-
-  useEffect(() => {
-    if (vectors) {
-      setTimeout(() => {
-        setGraphLoading(false);
-      }, 2000);
-    }
-  }, [vectors]);
 
   const embedQueries = async (data: ChatHistoryProps | string[]) => {
     try {
@@ -71,6 +104,7 @@ const Content: React.FC<ContentProps> = ({
         fullEmbeddings={vectors}
         embeddings={oldEmbeddings}
         graphLoading={graphLoading}
+        setGraphLoading={setGraphLoading}
         queryPoint={queryVector}
       />
       {metaLearned ? (
@@ -78,12 +112,29 @@ const Content: React.FC<ContentProps> = ({
           fullEmbeddings={vectors}
           embeddings={newEmbeddings}
           graphLoading={graphLoading}
+          setGraphLoading={setGraphLoading}
           queryPoint={queryVector}
         />
       ) : null}
       <UploadContainer>
-        <Chat newQueryVector={newQueryVector} />
-        <PineconeEmbeddings />
+        <Chat
+          newQueryVector={newQueryVector}
+          chatHistory={chatHistory}
+          setChatHistory={setChatHistory}
+          setGraphLoading={setGraphLoading}
+        />
+        <PineconeEmbeddings
+          queryVector={queryVector}
+          env={env}
+          setEnv={setEnv}
+          apiKey={apiKey}
+          setApiKey={setApiKey}
+          indexName={indexName}
+          setIndexName={setIndexName}
+          varsExist={varsExist}
+          setVarsExist={setVarsExist}
+          setChatHistory={setChatHistory}
+        />
         <UploadJson
           oldEmbeddings={oldEmbeddings}
           setOldEmbeddings={setOldEmbeddings}

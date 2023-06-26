@@ -1,42 +1,89 @@
-import React, { useState } from "react";
+import React from "react";
 import tw from "tailwind-styled-components";
+import axios from "axios";
+import { type ChatHistoryProps } from "./Content";
+import { type QueryVector } from "../pages/index";
 
 import { Text } from "~/styles/css";
 
-const PineconeEmbeddings = () => {
-  const [env, setEnv] = useState<string>("");
-  const [apiKey, setApiKey] = useState<string>("");
-  const [indexName, setIndexName] = useState<string>("");
+interface PineconeEmbeddingsProps {
+  queryVector: QueryVector;
+  env: string;
+  setEnv: React.Dispatch<React.SetStateAction<string>>;
+  apiKey: string;
+  setApiKey: React.Dispatch<React.SetStateAction<string>>;
+  indexName: string;
+  setIndexName: React.Dispatch<React.SetStateAction<string>>;
+  varsExist: boolean;
+  setVarsExist: React.Dispatch<React.SetStateAction<boolean>>;
+  setChatHistory: React.Dispatch<React.SetStateAction<ChatHistoryProps[]>>;
+}
 
-  const handleViewMyGraph = () => {
-    // Implement logic to view the user's graph here
-  };
+const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
+  queryVector,
+  env,
+  setEnv,
+  apiKey,
+  setApiKey,
+  indexName,
+  setIndexName,
+  varsExist,
+  setVarsExist,
+  setChatHistory,
+}) => {
+  const handleCheckEmbeddings = async () => {
+    console.log(queryVector);
+    const res = await axios.post(`/api/pinecone/query`, {
+      apiKey: apiKey,
+      environment: env,
+      vector: queryVector.fullVector,
+      indexName: indexName,
+    });
 
-  const handleViewExample = () => {
-    // Implement logic to view an example graph here
+    if (res.status !== 200) {
+      throw new Error(res.statusText);
+    }
+
+    setVarsExist(true);
+    setChatHistory([]);
   };
 
   return (
     <PineconeContainer>
-      <UserInput
-        placeholder="Pinecone env"
-        value={env}
-        onChange={(e) => setEnv(e.target.value)}
-      />
-      <UserInput
-        placeholder="Index name"
-        value={indexName}
-        onChange={(e) => setIndexName(e.target.value)}
-      />
-      <UserInput
-        type="password"
-        placeholder="Pinecone API Key"
-        value={apiKey}
-        onChange={(e) => setApiKey(e.target.value)}
-      />
-      <Button onClick={handleViewMyGraph}>
-        <Text>View My Graph</Text>
-      </Button>
+      {!varsExist ? (
+        <VarsContainer>
+          <UserInput
+            placeholder="Pinecone env"
+            value={env}
+            onChange={(e) => setEnv(e.target.value)}
+          />
+          <UserInput
+            placeholder="Index name"
+            value={indexName}
+            onChange={(e) => setIndexName(e.target.value)}
+          />
+          <UserInput
+            type="password"
+            placeholder="Pinecone API Key"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+          />
+          <Button onClick={handleCheckEmbeddings}>
+            <Text>Use my embeddings</Text>
+          </Button>
+        </VarsContainer>
+      ) : (
+        <div className="w-4/5 text-center">
+          <Text className="mb-2">Variables loaded!</Text>
+          <Text>
+            Comparison query: <b>{`'${queryVector.text}'`}</b>
+          </Text>
+          <Text className="mt-2 font-bold">
+            Send a message on the right to check similarity for different
+            queries
+          </Text>
+        </div>
+      )}
     </PineconeContainer>
   );
 };
@@ -48,6 +95,13 @@ const PineconeContainer = tw.div`
     flex-col
     w-1/3
     items-center
+`;
+
+const VarsContainer = tw.div`
+    flex
+    flex-col
+    items-center
+    w-full
 `;
 
 const UserInput = tw.input`

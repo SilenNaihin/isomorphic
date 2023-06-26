@@ -10,6 +10,7 @@ interface DisplayMapProps {
   embeddings: number[][];
   fullEmbeddings: ScoredVector[];
   graphLoading: boolean;
+  setGraphLoading: React.Dispatch<React.SetStateAction<boolean>>;
   queryPoint: QueryVector;
 }
 
@@ -18,6 +19,7 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
   fullEmbeddings,
   graphLoading,
   queryPoint,
+  setGraphLoading,
 }) => {
   const [includeMetadata, setIncludeMetadata] = useState<boolean>(false);
   const x = embeddings.map((subArray) => subArray[0]);
@@ -131,15 +133,18 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
   return (
     <GraphContainer>
       {graphLoading ? (
-        <Text>Example Loading...</Text>
-      ) : (
-        <Plot
-          data={data as any[]}
-          layout={layout as any}
-          style={{ width: "100%", height: "100%" }}
-        />
-      )}
-      <CheckboxContainer onClick={() => setIncludeMetadata(!includeMetadata)}>
+        <Text className="mx-auto">Example loading...</Text>
+      ) : null}
+      <Plot
+        data={data as any[]}
+        layout={layout as any}
+        onAfterPlot={() => setGraphLoading(false)}
+        style={{ width: "100%", height: "100%" }}
+      />
+      <CheckboxContainer
+        className={`${graphLoading ? "hidden" : ""}`}
+        onClick={() => setIncludeMetadata(!includeMetadata)}
+      >
         <input
           onChange={() => console.log("Metadata")}
           type="checkbox"

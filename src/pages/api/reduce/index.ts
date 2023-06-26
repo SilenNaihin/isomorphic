@@ -1,20 +1,28 @@
 import { type NextApiRequest, type NextApiResponse } from "next";
 import axios from "axios";
 
+export const config = {
+  api: {
+    bodyParser: false,
+    responseLimit: false,
+  },
+};
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { queryVector } = req.body;
+  console.log(req.body);
+  const { queryVectors } = req.body;
 
   if (req.method === "POST") {
-    if (!queryVector) {
+    if (!queryVectors) {
       return res.status(400).json({ error: "Required parameters missing." });
     }
 
     try {
-      console.log("queryVector", queryVector);
+      console.log("queryVector", queryVectors);
       const reduction = process.env.REDUCTION_FUNCTION_URL as string;
 
       const response = await axios.post(reduction, {
-        data: [queryVector],
+        data: [queryVectors],
       });
 
       if (response.data) {

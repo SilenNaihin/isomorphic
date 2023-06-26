@@ -1,0 +1,656 @@
+{
+  "embeddings": [
+    [
+      -0.13791827133284024,
+      -0.08354422750716538,
+      0.0765248732806051
+    ],
+    [
+      -0.13791827133284013,
+      -0.08354422750716564,
+      0.07652487328060481
+    ],
+    [
+      -0.13791827133284018,
+      -0.0835442275071654,
+      0.07652487328060492
+    ],
+    [
+      -0.1379182713328402,
+      -0.08354422750716542,
+      0.07652487328060498
+    ],
+    [
+      -0.1379182713328402,
+      -0.0835442275071654,
+      0.07652487328060498
+    ],
+    [
+      -0.1379182713328402,
+      -0.0835442275071654,
+      0.0765248732806049
+    ],
+    [
+      -0.04609693539589147,
+      -0.14451621495359276,
+      -0.04892728960877496
+    ],
+    [
+      -0.046096935395891485,
+      -0.14451621495359276,
+      -0.04892728960877496
+    ],
+    [
+      -0.046096935395891485,
+      -0.14451621495359276,
+      -0.04892728960877496
+    ],
+    [
+      -0.1378508341445078,
+      -0.0835367775596255,
+      0.07657798200608597
+    ],
+    [
+      -0.083410930818792,
+      -0.031514833078165355,
+      -0.03239493713853607
+    ],
+    [
+      -0.083410930818792,
+      -0.031514833078165355,
+      -0.03239493713853607
+    ],
+    [
+      -0.083410930818792,
+      -0.031514833078165355,
+      -0.03239493713853607
+    ],
+    [
+      0.020446904258453566,
+      -0.010653469065581024,
+      -0.1312179005430707
+    ],
+    [
+      0.020446904258453566,
+      -0.010653469065581024,
+      -0.1312179005430707
+    ],
+    [
+      0.020446904258453566,
+      -0.010653469065581024,
+      -0.1312179005430707
+    ],
+    [
+      -0.04274398036132461,
+      -0.09232801912981001,
+      -0.01966744907839536
+    ],
+    [
+      -0.04274398036132461,
+      -0.09232801912981001,
+      -0.01966744907839536
+    ],
+    [
+      -0.04274398036132461,
+      -0.09232801912981001,
+      -0.01966744907839536
+    ],
+    [
+      -0.01605342193444665,
+      -0.26006315753085757,
+      -0.02295719654198381
+    ],
+    [
+      -0.01605342193444665,
+      -0.26006315753085757,
+      -0.02295719654198381
+    ],
+    [
+      -0.01605342193444665,
+      -0.26006315753085757,
+      -0.02295719654198381
+    ],
+    [
+      -0.02385333748900555,
+      0.15699441982772377,
+      0.34966859927438615
+    ],
+    [
+      -0.02385333748900555,
+      0.15699441982772377,
+      0.34966859927438615
+    ],
+    [
+      -0.02385333748900555,
+      0.15699441982772377,
+      0.34966859927438615
+    ],
+    [
+      -0.02385333748900555,
+      0.15699441982772377,
+      0.34966859927438615
+    ],
+    [
+      -0.016111358855053087,
+      -0.2600352923457947,
+      -0.02300762616372803
+    ],
+    [
+      -0.09953194194714751,
+      0.27179518876815867,
+      -0.20771583577826377
+    ],
+    [
+      -0.09961310462902895,
+      0.27177871681676186,
+      -0.2076462662370306
+    ],
+    [
+      -0.09961310462902895,
+      0.27177871681676186,
+      -0.2076462662370306
+    ],
+    [
+      -0.09961310462902895,
+      0.27177871681676186,
+      -0.2076462662370306
+    ],
+    [
+      0.35473788198007516,
+      -0.006168355619029888,
+      -0.002690510645692764
+    ],
+    [
+      0.35473788198007516,
+      -0.006168355619029888,
+      -0.002690510645692764
+    ],
+    [
+      0.35473788198007516,
+      -0.006168355619029888,
+      -0.002690510645692764
+    ],
+    [
+      0.35473788198007516,
+      -0.006168355619029888,
+      -0.002690510645692764
+    ],
+    [
+      0.35473788198007516,
+      -0.006168355619029888,
+      -0.002690510645692764
+    ],
+    [
+      0.35473788198007516,
+      -0.006168355619029888,
+      -0.002690510645692764
+    ],
+    [
+      0.35473788198007516,
+      -0.006168355619029888,
+      -0.002690510645692764
+    ],
+    [
+      -0.030249321347610134,
+      0.14453171383606192,
+      -0.09130868981290667
+    ],
+    [
+      -0.030249321347610134,
+      0.14453171383606192,
+      -0.09130868981290667
+    ],
+    [
+      -0.030249321347610134,
+      0.14453171383606192,
+      -0.09130868981290667
+    ],
+    [
+      -0.06150914816485964,
+      0.02976892643590708,
+      -0.007365104114090953
+    ],
+    [
+      -0.06150914816485964,
+      0.02976892643590708,
+      -0.007365104114090953
+    ],
+    [
+      -0.06150914816485964,
+      0.02976892643590708,
+      -0.007365104114090953
+    ],
+    [
+      0.0025903586886092803,
+      0.17110124197739934,
+      0.04374688055508413
+    ],
+    [
+      0.0025903586886092803,
+      0.17110124197739934,
+      0.04374688055508413
+    ],
+    [
+      0.0025903586886092803,
+      0.17110124197739934,
+      0.04374688055508413
+    ],
+    [
+      -0.07894310728202764,
+      -0.08202388657393408,
+      -0.04387690825543473
+    ],
+    [
+      -0.07894310728202764,
+      -0.08202388657393408,
+      -0.04387690825543473
+    ],
+    [
+      -0.07894310728202764,
+      -0.08202388657393408,
+      -0.04387690825543473
+    ]
+  ],
+  "embeddingInfo": [
+    {
+      "id": "9903253197810069",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 34: Why didst thou promise such a beauteous day"
+      },
+      "score": 0.758022785
+    },
+    {
+      "id": "9201456048296356",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 34: Why didst thou promise such a beauteous day"
+      },
+      "score": 0.758022785
+    },
+    {
+      "id": "3214969482209872",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 34: Why didst thou promise such a beauteous day"
+      },
+      "score": 0.758022785
+    },
+    {
+      "id": "6772559408093537",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 34: Why didst thou promise such a beauteous day"
+      },
+      "score": 0.758022785
+    },
+    {
+      "id": "1187995769006810",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 34: Why didst thou promise such a beauteous day"
+      },
+      "score": 0.758022785
+    },
+    {
+      "id": "9346785252776674",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 34: Why didst thou promise such a beauteous day"
+      },
+      "score": 0.758022785
+    },
+    {
+      "id": "4521290408308998",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 97: How like a winter hath my absence been"
+      },
+      "score": 0.757979035
+    },
+    {
+      "id": "1088571824705110",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 97: How like a winter hath my absence been"
+      },
+      "score": 0.757979035
+    },
+    {
+      "id": "6370876462030373",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 97: How like a winter hath my absence been"
+      },
+      "score": 0.757979035
+    },
+    {
+      "id": "3963944606003393",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 34: Why didst thou promise such a beauteous day"
+      },
+      "score": 0.757898092
+    },
+    {
+      "id": "4662893721674826",
+      "metadata": {
+        "author": "SIR PHILIP SIDNEY",
+        "title": "Astrophil and Stella 21: Your words my friend (right healthful caustics) blame "
+      },
+      "score": 0.75318253
+    },
+    {
+      "id": "9831830531825826",
+      "metadata": {
+        "author": "SIR PHILIP SIDNEY",
+        "title": "Astrophil and Stella 21: Your words my friend (right healthful caustics) blame "
+      },
+      "score": 0.75318253
+    },
+    {
+      "id": "7074738886273196",
+      "metadata": {
+        "author": "SIR PHILIP SIDNEY",
+        "title": "Astrophil and Stella 21: Your words my friend (right healthful caustics) blame "
+      },
+      "score": 0.75318253
+    },
+    {
+      "id": "3527759963324025",
+      "metadata": {
+        "author": "CHRISTOPHER MARLOWE",
+        "title": "Elegies, Book One, 5"
+      },
+      "score": 0.750427
+    },
+    {
+      "id": "6709399297894205",
+      "metadata": {
+        "author": "CHRISTOPHER MARLOWE",
+        "title": "Elegies, Book One, 5"
+      },
+      "score": 0.750427
+    },
+    {
+      "id": "2397332866347249",
+      "metadata": {
+        "author": "CHRISTOPHER MARLOWE",
+        "title": "Elegies, Book One, 5"
+      },
+      "score": 0.750427
+    },
+    {
+      "id": "4237256302206377",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 33: Full many a glorious morning have I seen"
+      },
+      "score": 0.748708963
+    },
+    {
+      "id": "1632348286334579",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 33: Full many a glorious morning have I seen"
+      },
+      "score": 0.748708963
+    },
+    {
+      "id": "3855453309080585",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 33: Full many a glorious morning have I seen"
+      },
+      "score": 0.748708963
+    },
+    {
+      "id": "1267158297195085",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 18: Shall I compare thee to a summers day?"
+      },
+      "score": 0.747513771
+    },
+    {
+      "id": "6104485311369262",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 18: Shall I compare thee to a summers day?"
+      },
+      "score": 0.747513771
+    },
+    {
+      "id": "8454693460617979",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 18: Shall I compare thee to a summers day?"
+      },
+      "score": 0.747513771
+    },
+    {
+      "id": "5633600025311442",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Song: When that I was and a little tiny boy (With hey, ho, the wind and the rain)"
+      },
+      "score": 0.747463942
+    },
+    {
+      "id": "7017700392063346",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Song: When that I was and a little tiny boy (With hey, ho, the wind and the rain)"
+      },
+      "score": 0.747463942
+    },
+    {
+      "id": "5387787928713407",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Song: When that I was and a little tiny boy (With hey, ho, the wind and the rain)"
+      },
+      "score": 0.747463942
+    },
+    {
+      "id": "3137575066975377",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Song: When that I was and a little tiny boy (With hey, ho, the wind and the rain)"
+      },
+      "score": 0.747463942
+    },
+    {
+      "id": "6575095536701597",
+      "metadata": {
+        "author": "WILLIAM SHAKESPEARE",
+        "title": "Sonnet 18: Shall I compare thee to a summers day?"
+      },
+      "score": 0.747418463
+    },
+    {
+      "id": "4025512775453916",
+      "metadata": {
+        "author": "THOMAS BASTARD",
+        "title": "Book 2, Epigram 22"
+      },
+      "score": 0.745468497
+    },
+    {
+      "id": "8327442350057167",
+      "metadata": {
+        "author": "THOMAS BASTARD",
+        "title": "Book 2, Epigram 22"
+      },
+      "score": 0.745463073
+    },
+    {
+      "id": "7475096317185560",
+      "metadata": {
+        "author": "THOMAS BASTARD",
+        "title": "Book 2, Epigram 22"
+      },
+      "score": 0.745463073
+    },
+    {
+      "id": "8527116634805504",
+      "metadata": {
+        "author": "THOMAS BASTARD",
+        "title": "Book 2, Epigram 22"
+      },
+      "score": 0.745463073
+    },
+    {
+      "id": "6215250971094209",
+      "metadata": {
+        "author": "EDMUND SPENSER",
+        "title": "Prothalamion"
+      },
+      "score": 0.7453264
+    },
+    {
+      "id": "4882951438402968",
+      "metadata": {
+        "author": "EDMUND SPENSER",
+        "title": "Prothalamion"
+      },
+      "score": 0.7453264
+    },
+    {
+      "id": "5338613837239935",
+      "metadata": {
+        "author": "EDMUND SPENSER",
+        "title": "Prothalamion"
+      },
+      "score": 0.7453264
+    },
+    {
+      "id": "8967633398033931",
+      "metadata": {
+        "author": "EDMUND SPENSER",
+        "title": "Prothalamion"
+      },
+      "score": 0.7453264
+    },
+    {
+      "id": "1925965335826504",
+      "metadata": {
+        "author": "EDMUND SPENSER",
+        "title": "Prothalamion"
+      },
+      "score": 0.7453264
+    },
+    {
+      "id": "2492063591746892",
+      "metadata": {
+        "author": "EDMUND SPENSER",
+        "title": "Prothalamion"
+      },
+      "score": 0.7453264
+    },
+    {
+      "id": "6888780763536588",
+      "metadata": {
+        "author": "EDMUND SPENSER",
+        "title": "Prothalamion"
+      },
+      "score": 0.7453264
+    },
+    {
+      "id": "6762097965299719",
+      "metadata": {
+        "author": "SIR THOMAS WYATT",
+        "title": "Remembrance"
+      },
+      "score": 0.744040132
+    },
+    {
+      "id": "2985298321285914",
+      "metadata": {
+        "author": "SIR THOMAS WYATT",
+        "title": "Remembrance"
+      },
+      "score": 0.744040132
+    },
+    {
+      "id": "8434517522444289",
+      "metadata": {
+        "author": "SIR THOMAS WYATT",
+        "title": "Remembrance"
+      },
+      "score": 0.744040132
+    },
+    {
+      "id": "5257288093779323",
+      "metadata": {
+        "author": "SIR THOMAS WYATT",
+        "title": "My Galley, Charged with Forgetfulness"
+      },
+      "score": 0.743843615
+    },
+    {
+      "id": "3629966990549171",
+      "metadata": {
+        "author": "SIR THOMAS WYATT",
+        "title": "My Galley, Charged with Forgetfulness"
+      },
+      "score": 0.743843615
+    },
+    {
+      "id": "2471869541501611",
+      "metadata": {
+        "author": "SIR THOMAS WYATT",
+        "title": "My Galley, Charged with Forgetfulness"
+      },
+      "score": 0.743843615
+    },
+    {
+      "id": "3432818793984921",
+      "metadata": {
+        "author": "SIR THOMAS WYATT",
+        "title": "Of the Mean and Sure Estate"
+      },
+      "score": 0.742944956
+    },
+    {
+      "id": "4225033835566450",
+      "metadata": {
+        "author": "SIR THOMAS WYATT",
+        "title": "Of the Mean and Sure Estate"
+      },
+      "score": 0.742944956
+    },
+    {
+      "id": "5902489082437153",
+      "metadata": {
+        "author": "SIR THOMAS WYATT",
+        "title": "Of the Mean and Sure Estate"
+      },
+      "score": 0.742944956
+    },
+    {
+      "id": "8387320409480691",
+      "metadata": {
+        "author": "JOHN DONNE",
+        "title": "Elegy V: His Picture"
+      },
+      "score": 0.74269563
+    },
+    {
+      "id": "6180143167244034",
+      "metadata": {
+        "author": "JOHN DONNE",
+        "title": "Elegy V: His Picture"
+      },
+      "score": 0.74269563
+    },
+    {
+      "id": "6427977989072062",
+      "metadata": {
+        "author": "JOHN DONNE",
+        "title": "Elegy V: His Picture"
+      },
+      "score": 0.74269563
+    }
+  ]
+}

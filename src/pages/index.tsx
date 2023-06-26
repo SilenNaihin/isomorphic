@@ -11,6 +11,7 @@ import Content from "../components/Content";
 export interface QueryVector {
   vector: number[];
   text: string;
+  fullVector: number[];
 }
 
 export interface ContentProps {
@@ -53,43 +54,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const randomStringToEmbed = "How was your day yesterday?";
 
-  const embeddedString = await axios.post(`${baseUrl}/api/openai/embed`, {
-    texts: [randomStringToEmbed],
-  });
+  // Fetch the cached data from the JSON file in public folder
+  const cachedJsonRes = await fetch(`${baseUrl}/cached_vectors.json`);
+  const cachedJson = await cachedJsonRes.json();
 
-  const vector: number[] = embeddedString.data.vectors[0];
-
-  // Make your POST request
-  const res = await axios.post(`${baseUrl}/api/pinecone/query`, {
-    apiKey: process.env.PINECONE_API_KEY,
-    environment: process.env.PINECONE_ENV,
-    vector,
-    indexName: process.env.PINECONE_INDEX_NAME,
-  });
-
-  // Check for errors
-  if (res.status !== 200) {
-    throw new Error(res.statusText);
-  }
-
-  // Extract the query data from the response
-  const { vectorMatches, dataVectorArr } = res.data;
-
-  const reduction = process.env.REDUCTION_FUNCTION_URL as string;
-
-  const reducedVectors = await axios.post(reduction, {
-    data: [vector, ...dataVectorArr],
-  });
-
-  const reducedData = JSON.parse(reducedVectors.data.body);
-  const firstVector = reducedData.shift();
+  const cachedJsonQueryVec = await fetch(`${baseUrl}/example_query_vec.json`);
+  const queryVec = await cachedJsonQueryVec.json();
 
   // Return the queryData as a prop
   return {
     props: {
-      dataVectorArr: reducedData,
-      vectors: vectorMatches,
-      tempQueryVector: { vector: firstVector, text: randomStringToEmbed },
+      dataVectorArr: cachedJson.embeddings,
+      vectors: cachedJson.embeddingInfo,
+      tempQueryVector: {
+        vector: queryVec.reduced_values,
+        text: randomStringToEmbed,
+        fullVector: queryVec.values,
+      },
     },
   };
 };
