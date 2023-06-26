@@ -4,20 +4,22 @@ const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 import { type ScoredVector } from "@pinecone-database/pinecone";
 import tw from "tailwind-styled-components";
 import { Text } from "~/styles/css";
+import { type QueryVector } from "../pages/index";
 
 interface DisplayMapProps {
   embeddings: number[][];
   fullEmbeddings: ScoredVector[];
   graphLoading: boolean;
+  queryPoint: QueryVector;
 }
 
 export const DisplayMap: React.FC<DisplayMapProps> = ({
   embeddings,
   fullEmbeddings,
   graphLoading,
+  queryPoint,
 }) => {
   const [includeMetadata, setIncludeMetadata] = useState<boolean>(false);
-
   const x = embeddings.map((subArray) => subArray[0]);
   const y = embeddings.map((subArray) => subArray[1]);
   const z = embeddings.map((subArray) => subArray[2]);
@@ -38,6 +40,7 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
       z: z,
       mode: "markers",
       type: "scatter3d",
+      name: "Embeddings",
       hovertemplate:
         "%{text}<br>x: %{x:.3f}, y: %{y:.3f}, z: %{z:.3f}<extra></extra>",
       text: hoverText,
@@ -53,6 +56,28 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
       x: x,
       y: y,
       z: z,
+      hoverinfo: "skip",
+    },
+    {
+      x: [queryPoint.vector[0]],
+      y: [queryPoint.vector[1]],
+      z: [queryPoint.vector[2]],
+      mode: "markers",
+      name: "Query",
+      type: "scatter3d",
+      text: [
+        `text: ${
+          queryPoint.text.length > 30
+            ? queryPoint.text.substring(0, 30) + "..."
+            : queryPoint.text
+        }`,
+      ],
+      hovertemplate:
+        "Query Point<br>%{text}<br>x: %{x:.3f}<br>y: %{y:.3f}<br>z: %{z:.3f}<extra></extra>",
+      marker: {
+        color: "rgb(255, 0, 0)", // Change color for the query point
+        size: 2,
+      },
     },
   ];
 
@@ -115,7 +140,11 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
         />
       )}
       <CheckboxContainer onClick={() => setIncludeMetadata(!includeMetadata)}>
-        <input type="checkbox" checked={includeMetadata} />
+        <input
+          onChange={() => console.log("Metadata")}
+          type="checkbox"
+          checked={includeMetadata}
+        />
         <Text className="ml-1">Include metadata</Text>
       </CheckboxContainer>
     </GraphContainer>
@@ -125,7 +154,7 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
 export default DisplayMap;
 
 const GraphContainer = tw.div`
-  flex h-64 w-64 flex-col items-start justify-center
+  flex h-96 w-96 flex-col items-start justify-center
 `;
 
 const CheckboxContainer = tw.div`

@@ -27,7 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const queryResponse = await index.query({
         queryRequest: {
           vector,
-          topK: 10000,
+          topK: 50,
           includeValues: true,
           includeMetadata: true,
         },

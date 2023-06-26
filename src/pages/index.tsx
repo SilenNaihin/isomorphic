@@ -8,10 +8,15 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Content from "../components/Content";
 
+export interface QueryVector {
+  vector: number[];
+  text: string;
+}
+
 export interface ContentProps {
   dataVectorArr: number[][];
   vectors: ScoredVector[];
-  tempQueryVector: number[];
+  tempQueryVector: QueryVector;
 }
 
 const Home: NextPage<ContentProps> = ({
@@ -70,15 +75,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const reduction = process.env.REDUCTION_FUNCTION_URL as string;
 
   const reducedVectors = await axios.post(reduction, {
-    data: dataVectorArr,
+    data: [vector, ...dataVectorArr],
   });
+
+  const reducedData = JSON.parse(reducedVectors.data.body);
+  const firstVector = reducedData.shift();
 
   // Return the queryData as a prop
   return {
     props: {
-      dataVectorArr: JSON.parse(reducedVectors.data.body),
+      dataVectorArr: reducedData,
       vectors: vectorMatches,
-      tempQueryVector: vector,
+      tempQueryVector: { vector: firstVector, text: randomStringToEmbed },
     },
   };
 };

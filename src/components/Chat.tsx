@@ -9,8 +9,11 @@ import axios from "axios";
 
 import { ChatHistoryProps } from "./Content";
 
-const User: React.FC = () => {
-  const router = useRouter();
+interface ChatProps {
+  newQueryVector: (queryVector: number[], text: string) => void;
+}
+
+const Chat: React.FC<ChatProps> = ({ newQueryVector }) => {
   const [userMessage, setUserMessage] = useState<string>("");
   const [chatHistory, setChatHistory] = useState<ChatHistoryProps[]>([
     { content: "How was your day yesterday?", role: "user" },
@@ -26,9 +29,6 @@ const User: React.FC = () => {
         texts: [userMessage],
       });
 
-      const embUserMessage = embUserMessageResponse.data.vectors;
-      // TODO: make it so that the message gets added to the graph in a different color
-
       try {
         const prompts = [];
 
@@ -36,7 +36,7 @@ const User: React.FC = () => {
         prompts.push({
           role: ChatCompletionRequestMessageRoleEnum.System,
           content:
-            "Act like William Shakespeare. Your responses should be in the format of a William Shakespeare poem, and embody the soul of William Shakespeare.",
+            "Act like William Shakespeare. Your responses should be in the format of a William Shakespeare poem, and embody the soul of William Shakespeare. Respond in one sentence, under 25 tokens.",
         });
 
         // Previous messages
@@ -66,8 +66,6 @@ ${historyContent}`,
         setChatHistory([...chatHistory, userPrompt]);
         setUserMessage("");
 
-        console.log([...chatHistory, userPrompt]);
-
         const aiResponse = await axios.post("/api/openai", {
           prompts: prompts,
         });
@@ -79,6 +77,8 @@ ${historyContent}`,
             userPrompt,
             { role: "assistant", content: aiContent },
           ]);
+
+          // newQueryVector(embUserMessageResponse.data.vectors[0], userMessage);
         } else {
           // Handle the case where the response does not contain the expected data
           console.error("Unexpected response format:", aiResponse);
@@ -112,22 +112,24 @@ ${historyContent}`,
           }}
         />
         <ButtonsContainer>
-        <SendButton onClick={respondToChat}><Text>Send</Text></SendButton>
-        <ResetButton onClick={() => setChatHistory([])}>Reset</ResetButton>
+          <SendButton onClick={respondToChat}>
+            <Text>Send</Text>
+          </SendButton>
+          <ResetButton onClick={() => setChatHistory([])}>Reset</ResetButton>
         </ButtonsContainer>
       </ChatWrapper>
     </ChatContainer>
   );
 };
 
-export default User;
+export default Chat;
 
 const ChatContainer = tw.div`
   flex 
   items-start 
   justify-center
   w-1/3
-  px-4
+  px-8
 `;
 
 const ChatWrapper = tw.div`
@@ -152,7 +154,7 @@ const ButtonsContainer = tw.div`
   w-full
   justify-between
   mt-1
-`
+`;
 
 const SendButton = tw.button`
   rounded-lg

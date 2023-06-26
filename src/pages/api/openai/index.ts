@@ -17,7 +17,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const response = await openai.createChatCompletion({
       messages: prompts,
       model: "gpt-3.5-turbo",
-      max_tokens: 25,
+      max_tokens: 20,
     });
 
     return res.status(200).json(response.data);

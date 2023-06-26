@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import tw from "tailwind-styled-components";
 import axios from "axios";
 
-import { type ContentProps } from "../pages/index";
+import { type ContentProps, type QueryVector } from "../pages/index";
 
 import DisplayMap from "./DisplayMap";
 import Chat from "./Chat";
@@ -23,10 +23,24 @@ const Content: React.FC<ContentProps> = ({
   const [newEmbeddings, setNewEmbeddings] = useState<number[][]>([[]]);
   const [uploadStatus, setUploadStatus] = useState<string>("");
 
-  const [queryVector, setQueryVector] = useState<number[]>(tempQueryVector);
+  const [queryVector, setQueryVector] = useState<QueryVector>(tempQueryVector);
 
   const [metaLearned, setMetaLearned] = useState<boolean>(false);
   const [graphLoading, setGraphLoading] = useState<boolean>(true);
+
+  const newQueryVector = async (queryVector: number[], text: string) => {
+    try {
+      const reducedVectors = await axios.post("/api/reduce", {
+        queryVector: queryVector,
+      });
+
+      const reducedData = JSON.parse(reducedVectors.data.body);
+
+      return { vector: reducedData[0], text: text };
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (vectors) {
@@ -57,16 +71,18 @@ const Content: React.FC<ContentProps> = ({
         fullEmbeddings={vectors}
         embeddings={oldEmbeddings}
         graphLoading={graphLoading}
+        queryPoint={queryVector}
       />
       {metaLearned ? (
         <DisplayMap
           fullEmbeddings={vectors}
           embeddings={newEmbeddings}
           graphLoading={graphLoading}
+          queryPoint={queryVector}
         />
       ) : null}
       <UploadContainer>
-        <Chat />
+        <Chat newQueryVector={newQueryVector} />
         <PineconeEmbeddings />
         <UploadJson
           oldEmbeddings={oldEmbeddings}
