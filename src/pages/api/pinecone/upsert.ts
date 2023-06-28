@@ -6,50 +6,41 @@ import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { PineconeClient } from "@pinecone-database/pinecone";
 
 const pinecone = new PineconeClient();
-const embeddings = new OpenAIEmbeddings({
-  openAIApiKey: process.env.OPENAI_API_KEY,
-  timeout: 1000,
-  modelName: "text-embedding-ada-002",
-});
-
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  await pinecone.init({
-    environment: process.env.PINECONE_ENV as string,
-    apiKey: process.env.PINECONE_API_KEY as string,
-  });
+  const { apiKey, environment, indexName, vectors, texts } = req.body;
 
   if (req.method === "POST") {
     try {
-      const texts: string[] = req.body.texts;
+      if (!vectors || !apiKey || !environment || !indexName) {
+        return res.status(400).json({ error: "Required parameters missing." });
+      }
 
-      const splitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 300,
-        chunkOverlap: 20,
+      await pinecone.init({
+        environment: environment,
+        apiKey: apiKey,
       });
 
-      const output = await splitter.createDocuments(texts);
+      const pineconeVectors = vectors.map((values: number[], i: number) => {
+        const vector = {
+          id: uuidv4(), // This generates a unique ID
+          type: req.body.type,
+          values,
+        };
 
-      const pageContents = output.map((doc) => doc.pageContent);
+        return texts ? { ...vector, metadata: { text: texts[i] } } : vector;
+      });
 
-      const documentRes = await embeddings.embedDocuments(pageContents);
-
-      const vectors = documentRes.map((values) => ({
-        id: uuidv4(), // This generates a unique ID
-        type: req.body.type,
-        values,
-      }));
-
-      const index = pinecone.Index(process.env.PINECONE_INDEX_NAME as string);
+      const index = pinecone.Index(indexName);
 
       const upsertResponse = await index.upsert({
         upsertRequest: {
-          vectors,
+          vectors: pineconeVectors,
         },
       });
 
       return res.status(200).json({
         upsertedCount: upsertResponse.upsertedCount,
-        ids: vectors.map((v) => v.id),
+        ids: pineconeVectors.map((v: any) => v.id),
       });
     } catch (err: any) {
       console.error(err);

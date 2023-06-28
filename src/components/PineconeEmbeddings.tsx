@@ -18,6 +18,7 @@ interface PineconeEmbeddingsProps {
   setVarsExist: React.Dispatch<React.SetStateAction<boolean>>;
   setChatHistory: React.Dispatch<React.SetStateAction<ChatHistoryProps[]>>;
   setOldEmbeddings: React.Dispatch<React.SetStateAction<number[][]>>;
+  reducedEmbeddings: (dataVectorArr: number[][]) => Promise<number[][]>;
 }
 
 const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
@@ -32,6 +33,7 @@ const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
   setVarsExist,
   setChatHistory,
   setOldEmbeddings,
+  reducedEmbeddings,
 }) => {
   const handleCheckEmbeddings = async () => {
     console.log(queryVector);
@@ -49,11 +51,7 @@ const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
     // Extract the query data from the response
     const { dataVectorArr } = res.data;
 
-    const reducedVectors = await axios.post("/api/reduce", {
-      queryVectors: dataVectorArr,
-    });
-
-    const reducedData = JSON.parse(reducedVectors.data.body);
+    const reducedData = await reducedEmbeddings(dataVectorArr);
 
     setVarsExist(true);
     setOldEmbeddings(reducedData);
@@ -92,6 +90,10 @@ const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
           </Text>
           <Text className="mt-2 font-bold">
             Send a message on the left to check similarity for different queries
+          </Text>
+          <Text className="mt-2 font-bold">
+            Upload JSON on the right to add embeddings to your index and display
+            them
           </Text>
         </div>
       )}

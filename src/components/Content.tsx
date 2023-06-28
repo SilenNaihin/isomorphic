@@ -41,6 +41,16 @@ const Content: React.FC<ContentProps> = ({
     },
   ]);
 
+  const reducedEmbeddings = async (
+    dataVectorArr: number[][]
+  ): Promise<number[][]> => {
+    const reducedVectors = await axios.post("/api/reduce", {
+      queryVectors: dataVectorArr,
+    });
+
+    return JSON.parse(reducedVectors.data.body);
+  };
+
   const newQueryVector = async (queryVector: number[], text: string) => {
     try {
       let res = null;
@@ -66,12 +76,11 @@ const Content: React.FC<ContentProps> = ({
 
       console.log([queryVector, ...dataVectorArr]);
 
-      const reducedVectors = await axios.post("/api/reduce", {
-        queryVectors: [queryVector, ...dataVectorArr],
-      });
-
-      const reducedData = JSON.parse(reducedVectors.data.body);
-      const firstVector = reducedData.shift();
+      const reducedData = await reducedEmbeddings([
+        queryVector,
+        ...dataVectorArr,
+      ]);
+      const firstVector = reducedData.shift() || [];
 
       setOldEmbeddings(reducedData);
       setQueryVector({
@@ -85,16 +94,32 @@ const Content: React.FC<ContentProps> = ({
     }
   };
 
-  const embedQueries = async (data: ChatHistoryProps | string[]) => {
+  const embedQueries = async (texts: string[]): Promise<number[][]> => {
     try {
       // Send a post request to the /api/pinecone/upsert API route
-      const response = await axios.post("/api/pinecone/upsert", {
-        texts: data,
+      const response = await axios.post("/api/openai/embed", {
+        texts: texts,
       });
 
-      // Update embeddings state
-      setOldEmbeddings(oldEmbeddings.concat(response.data));
-      setUploadStatus("File uploaded and processed successfully");
+      setUploadStatus("File successfully embedded");
+      return response.data;
+    } catch (error: any) {
+      setUploadStatus(`Error processing file: ${error.message}`);
+      return [];
+    }
+  };
+
+  const pineconeUpsert = async (vectors: number[][], texts?: string[]) => {
+    try {
+      const response = await axios.post("/api/pinecone/upsert", {
+        apiKey: apiKey,
+        environment: env,
+        vectors: vectors,
+        texts: texts,
+        indexName: indexName,
+      });
+
+      setUploadStatus("Uploaded to Pinecone successfully");
     } catch (error: any) {
       setUploadStatus(`Error processing file: ${error.message}`);
     }
@@ -138,6 +163,7 @@ const Content: React.FC<ContentProps> = ({
           setVarsExist={setVarsExist}
           setChatHistory={setChatHistory}
           setOldEmbeddings={setOldEmbeddings}
+          reducedEmbeddings={reducedEmbeddings}
         />
         <UploadJson
           oldEmbeddings={oldEmbeddings}
@@ -145,6 +171,9 @@ const Content: React.FC<ContentProps> = ({
           uploadStatus={uploadStatus}
           setUploadStatus={setUploadStatus}
           embedQueries={embedQueries}
+          varsExist={varsExist}
+          pineconeUpsert={pineconeUpsert}
+          reducedEmbeddings={reducedEmbeddings}
         />
       </UploadContainer>
     </ContentContainer>

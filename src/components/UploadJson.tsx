@@ -1,4 +1,9 @@
-import React, { useCallback, type SetStateAction, type Dispatch } from "react";
+import React, {
+  useCallback,
+  type SetStateAction,
+  type Dispatch,
+  useState,
+} from "react";
 import { useDropzone, type FileWithPath } from "react-dropzone";
 import tw from "tailwind-styled-components";
 import { Tooltip as ReactTooltip } from "react-tooltip";
@@ -12,7 +17,10 @@ interface UploadJsonProps {
   setOldEmbeddings: Dispatch<SetStateAction<number[][]>>;
   uploadStatus: string;
   setUploadStatus: Dispatch<SetStateAction<string>>;
-  embedQueries: (data: ChatHistoryProps | string[]) => void;
+  embedQueries: (texts: string[]) => Promise<number[][]>;
+  varsExist: boolean;
+  pineconeUpsert: (data: number[][], texts: string[]) => void;
+  reducedEmbeddings: (dataVectorArr: number[][]) => Promise<number[][]>;
 }
 
 const UploadJson: React.FC<UploadJsonProps> = ({
@@ -21,13 +29,18 @@ const UploadJson: React.FC<UploadJsonProps> = ({
   uploadStatus,
   setUploadStatus,
   embedQueries,
+  varsExist,
+  pineconeUpsert,
+  reducedEmbeddings,
 }) => {
+  const [pineconeUpload, setPineconeUpload] = useState<boolean>(false);
+
   const onDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
     for (const file of acceptedFiles) {
       await new Promise<void>((resolve, reject) => {
         const reader = new FileReader();
 
-        reader.onload = () => {
+        reader.onload = async () => {
           const fileAsBinaryString: string | ArrayBuffer | null = reader.result;
           let data;
 
@@ -39,6 +52,8 @@ const UploadJson: React.FC<UploadJsonProps> = ({
           }
 
           if (Array.isArray(data)) {
+            let embeddedQueries: number[][];
+            let texts: string[] = [];
             // Check if file.data is an array of {"role": str, "content": str} pairs
             if (
               data.every(
@@ -47,21 +62,27 @@ const UploadJson: React.FC<UploadJsonProps> = ({
                   typeof item.content === "string"
               )
             ) {
-              // Handle the array
-              embedQueries(data);
+              const contentArr = data.map((item) => item.content);
+              texts = contentArr;
+              embeddedQueries = await embedQueries(texts);
             }
             // Check if file.data is an array of strings
             else if (data.every((item) => typeof item === "string")) {
-              // Handle the array
-              embedQueries(data);
+              texts = data;
+              embeddedQueries = await embedQueries(texts);
             }
             // check for an array of vectors, naive check to not slow down processing
             else if (data.every((item) => typeof item[0] == "number")) {
-              embedQueries(data);
+              embeddedQueries = data;
             } else {
               setUploadStatus("Invalid json format");
               return;
             }
+            if (pineconeUpload) {
+              pineconeUpsert(embeddedQueries, texts);
+            }
+            const reducedData = await reducedEmbeddings(embeddedQueries);
+            setOldEmbeddings(reducedData);
             resolve();
           }
         };
@@ -103,6 +124,16 @@ const UploadJson: React.FC<UploadJsonProps> = ({
         </FlexBox>
         <Text className="mt-2 text-red-500">{uploadStatus}</Text>
       </DropZoneContainer>
+      {varsExist ? (
+        <CheckboxContainer onClick={() => setPineconeUpload(true)}>
+          <input
+            onChange={() => console.log("Metadata")}
+            type="checkbox"
+            checked={pineconeUpload}
+          />
+          <Text className="ml-1">Upload to Pinecone</Text>
+        </CheckboxContainer>
+      ) : null}
     </UploadContainer>
   );
 };
@@ -141,4 +172,8 @@ const Formats = tw.div`
 const FlexBox = tw.div`
   flex
   items-center
+`;
+
+const CheckboxContainer = tw.div`
+  mt-2 flex
 `;
