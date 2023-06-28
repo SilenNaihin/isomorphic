@@ -91,15 +91,15 @@ const UploadJson: React.FC<UploadJsonProps> = ({
         <FlexBox>
           <Text>Drop a JSON file here, or click to select one </Text>
           <Formats
-            data-tip
-            data-tooltip-content={`.json file must be formatted as 
-            data: [strings] |
-            data: [{role: '', content: ''}] |
+            data-tooltip-id="format info"
+            data-tooltip-html={`<b>.json file must be formatted as</b> <br> 
+            data: [strings] <br>
+            data: [{role: '', content: ''}] <br>
             data: [vectors]`}
           >
             <FiInfo size={16} className="ml-1" />
           </Formats>
-          <ReactTooltip style={{ backgroundColor: "black" }} />
+          <ReactTooltip id="format info" style={{ backgroundColor: "black" }} />
         </FlexBox>
         <Text className="mt-2 text-red-500">{uploadStatus}</Text>
       </DropZoneContainer>
@@ -115,7 +115,7 @@ const UploadContainer = tw.div`
   flex-col
   items-center
   justify-center
-`
+`;
 
 const DropZoneContainer = tw.div`
   flex

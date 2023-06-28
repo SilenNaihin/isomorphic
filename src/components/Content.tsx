@@ -64,6 +64,8 @@ const Content: React.FC<ContentProps> = ({
       // Extract the query data from the response
       const { dataVectorArr } = res.data;
 
+      console.log([queryVector, ...dataVectorArr]);
+
       const reducedVectors = await axios.post("/api/reduce", {
         queryVectors: [queryVector, ...dataVectorArr],
       });
@@ -122,6 +124,7 @@ const Content: React.FC<ContentProps> = ({
           chatHistory={chatHistory}
           setChatHistory={setChatHistory}
           setGraphLoading={setGraphLoading}
+          varsExist={varsExist}
         />
         <PineconeEmbeddings
           queryVector={queryVector}
@@ -134,6 +137,7 @@ const Content: React.FC<ContentProps> = ({
           varsExist={varsExist}
           setVarsExist={setVarsExist}
           setChatHistory={setChatHistory}
+          setOldEmbeddings={setOldEmbeddings}
         />
         <UploadJson
           oldEmbeddings={oldEmbeddings}

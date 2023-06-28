@@ -14,6 +14,7 @@ interface ChatProps {
   chatHistory: ChatHistoryProps[];
   setChatHistory: React.Dispatch<React.SetStateAction<ChatHistoryProps[]>>;
   setGraphLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  varsExist: boolean;
 }
 
 const Chat: React.FC<ChatProps> = ({
@@ -21,6 +22,7 @@ const Chat: React.FC<ChatProps> = ({
   chatHistory,
   setChatHistory,
   setGraphLoading,
+  varsExist,
 }) => {
   const [userMessage, setUserMessage] = useState<string>("");
 
@@ -79,9 +81,9 @@ ${historyContent}`,
             { role: "assistant", content: aiContent },
           ]);
 
-          // setGraphLoading(true);
-          // newQueryVector(embUserMessageResponse.data.vectors[0], userMessage);
-          // setGraphLoading(false);
+          setGraphLoading(true);
+          newQueryVector(embUserMessageResponse.data.vectors[0], userMessage);
+          setGraphLoading(false);
         } else {
           // Handle the case where the response does not contain the expected data
           console.error("Unexpected response format:", aiResponse);
@@ -97,7 +99,10 @@ ${historyContent}`,
   return (
     <ChatContainer>
       <ChatWrapper>
-        <Text className="bold">Fake chat with a William Shakespeare</Text>
+        {!varsExist ? (
+          <Text className="bold">Fake chat with a William Shakespeare</Text>
+        ) : null}
+
         {chatHistory.map((msg, index) => (
           <ResponseText key={index}>
             <b>{msg.role === "user" ? "User: " : "Response: "}</b> {msg.content}
@@ -138,6 +143,7 @@ const ChatContainer = tw.div`
 const ChatWrapper = tw.div`
   flex 
   flex-col
+  w-full
   items-start 
   justify-center
   overflow-hidden

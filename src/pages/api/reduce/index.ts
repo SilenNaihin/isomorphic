@@ -3,8 +3,10 @@ import axios from "axios";
 
 export const config = {
   api: {
-    bodyParser: false,
-    responseLimit: false,
+    responseLimit: "50mb",
+    bodyParser: {
+      sizeLimit: "50mb",
+    },
   },
 };
 

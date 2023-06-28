@@ -17,6 +17,7 @@ interface PineconeEmbeddingsProps {
   varsExist: boolean;
   setVarsExist: React.Dispatch<React.SetStateAction<boolean>>;
   setChatHistory: React.Dispatch<React.SetStateAction<ChatHistoryProps[]>>;
+  setOldEmbeddings: React.Dispatch<React.SetStateAction<number[][]>>;
 }
 
 const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
@@ -30,6 +31,7 @@ const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
   varsExist,
   setVarsExist,
   setChatHistory,
+  setOldEmbeddings,
 }) => {
   const handleCheckEmbeddings = async () => {
     console.log(queryVector);
@@ -44,7 +46,17 @@ const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
       throw new Error(res.statusText);
     }
 
+    // Extract the query data from the response
+    const { dataVectorArr } = res.data;
+
+    const reducedVectors = await axios.post("/api/reduce", {
+      queryVectors: dataVectorArr,
+    });
+
+    const reducedData = JSON.parse(reducedVectors.data.body);
+
     setVarsExist(true);
+    setOldEmbeddings(reducedData);
     setChatHistory([]);
   };
 
@@ -79,8 +91,7 @@ const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
             Comparison query: <b>{`'${queryVector.text}'`}</b>
           </Text>
           <Text className="mt-2 font-bold">
-            Send a message on the right to check similarity for different
-            queries
+            Send a message on the left to check similarity for different queries
           </Text>
         </div>
       )}
