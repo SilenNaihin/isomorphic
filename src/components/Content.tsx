@@ -44,11 +44,16 @@ const Content: React.FC<ContentProps> = ({
   const reducedEmbeddings = async (
     dataVectorArr: number[][]
   ): Promise<number[][]> => {
-    const reducedVectors = await axios.post("/api/reduce", {
-      queryVectors: dataVectorArr,
-    });
+    const reducedVectors = await axios.post(
+      process.env.NEXT_PUBLIC_REDUCE_API_URL as string,
+      {
+        data: dataVectorArr,
+      }
+    );
 
-    return JSON.parse(reducedVectors.data.body);
+    console.log(reducedVectors.data);
+
+    return reducedVectors.data;
   };
 
   const newQueryVector = async (queryVector: number[], text: string) => {
