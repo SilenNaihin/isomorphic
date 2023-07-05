@@ -56,7 +56,10 @@ const Content: React.FC<ContentProps> = ({
     return reducedVectors.data;
   };
 
-  const newQueryVector = async (queryVector: number[], text: string) => {
+  const newQueryVector = async (
+    queryVector: number[],
+    text: string
+  ): Promise<void> => {
     try {
       let res = null;
       if (!varsExist) {
@@ -95,6 +98,12 @@ const Content: React.FC<ContentProps> = ({
       });
     } catch (error: any) {
       console.log(error);
+      // TODO: add larger onload data larger
+      // TODO: test JSON stuff
+      // toast(`Error processing file: ${error.message}`);
+      // using example embeddings, using x index embeddings. dropdown?
+      // mobile responsiveness
+      // twitter + launch
       setVarsExist(false);
     }
   };
@@ -124,6 +133,10 @@ const Content: React.FC<ContentProps> = ({
         indexName: indexName,
       });
 
+      if (response.status !== 200) {
+        throw new Error("Error uploading to Pinecone");
+      }
+
       setUploadStatus("Uploaded to Pinecone successfully");
     } catch (error: any) {
       setUploadStatus(`Error processing file: ${error.message}`);
@@ -132,23 +145,51 @@ const Content: React.FC<ContentProps> = ({
 
   return (
     <ContentContainer>
-      <DisplayMap
-        fullEmbeddings={vectors}
-        embeddings={oldEmbeddings}
-        graphLoading={graphLoading}
-        setGraphLoading={setGraphLoading}
-        queryPoint={queryVector}
-      />
-      {metaLearned ? (
+      <MapContainer style={{ width: "45%" }}>
         <DisplayMap
           fullEmbeddings={vectors}
-          embeddings={newEmbeddings}
+          embeddings={oldEmbeddings}
           graphLoading={graphLoading}
           setGraphLoading={setGraphLoading}
           queryPoint={queryVector}
         />
-      ) : null}
-      <UploadContainer>
+        {metaLearned ? (
+          <DisplayMap
+            fullEmbeddings={vectors}
+            embeddings={newEmbeddings}
+            graphLoading={graphLoading}
+            setGraphLoading={setGraphLoading}
+            queryPoint={queryVector}
+          />
+        ) : null}
+      </MapContainer>
+      <ChatContainer style={{ width: "55%" }}>
+        <UploadContainer>
+          <PineconeEmbeddings
+            queryVector={queryVector}
+            env={env}
+            setEnv={setEnv}
+            apiKey={apiKey}
+            setApiKey={setApiKey}
+            indexName={indexName}
+            setIndexName={setIndexName}
+            varsExist={varsExist}
+            setVarsExist={setVarsExist}
+            setChatHistory={setChatHistory}
+            setOldEmbeddings={setOldEmbeddings}
+            reducedEmbeddings={reducedEmbeddings}
+          />
+          <UploadJson
+            oldEmbeddings={oldEmbeddings}
+            setOldEmbeddings={setOldEmbeddings}
+            uploadStatus={uploadStatus}
+            setUploadStatus={setUploadStatus}
+            embedQueries={embedQueries}
+            varsExist={varsExist}
+            pineconeUpsert={pineconeUpsert}
+            reducedEmbeddings={reducedEmbeddings}
+          />
+        </UploadContainer>
         <Chat
           newQueryVector={newQueryVector}
           chatHistory={chatHistory}
@@ -156,50 +197,37 @@ const Content: React.FC<ContentProps> = ({
           setGraphLoading={setGraphLoading}
           varsExist={varsExist}
         />
-        <PineconeEmbeddings
-          queryVector={queryVector}
-          env={env}
-          setEnv={setEnv}
-          apiKey={apiKey}
-          setApiKey={setApiKey}
-          indexName={indexName}
-          setIndexName={setIndexName}
-          varsExist={varsExist}
-          setVarsExist={setVarsExist}
-          setChatHistory={setChatHistory}
-          setOldEmbeddings={setOldEmbeddings}
-          reducedEmbeddings={reducedEmbeddings}
-        />
-        <UploadJson
-          oldEmbeddings={oldEmbeddings}
-          setOldEmbeddings={setOldEmbeddings}
-          uploadStatus={uploadStatus}
-          setUploadStatus={setUploadStatus}
-          embedQueries={embedQueries}
-          varsExist={varsExist}
-          pineconeUpsert={pineconeUpsert}
-          reducedEmbeddings={reducedEmbeddings}
-        />
-      </UploadContainer>
+      </ChatContainer>
     </ContentContainer>
   );
 };
 
+const MapContainer = tw.div`
+  flex
+  flex-col
+  items-center
+  justify-center
+`;
+
 const ContentContainer = tw.div`
   flex 
-  flex-col
-  flex-grow 
-  items-center 
+  items-center
   justify-center
   w-full
+`;
+
+const ChatContainer = tw.div`
+  flex
+  flex-col
+  items-center 
+  justify-evenly
 `;
 
 const UploadContainer = tw.div`
   flex
   items-center 
-  justify-evenly
-  w-full
-  mt-8
+  justify-between
+  mb-8
 `;
 
 export default Content;

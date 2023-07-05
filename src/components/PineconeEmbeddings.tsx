@@ -3,8 +3,10 @@ import tw from "tailwind-styled-components";
 import axios from "axios";
 import { type ChatHistoryProps } from "./Content";
 import { type QueryVector } from "../pages/index";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import { FiInfo } from "react-icons/fi";
 
-import { Text } from "~/styles/css";
+import { Text, FlexBox } from "~/styles/css";
 
 interface PineconeEmbeddingsProps {
   queryVector: QueryVector;
@@ -88,13 +90,22 @@ const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
           <Text>
             Comparison query: <b>{`'${queryVector.text}'`}</b>
           </Text>
-          <Text className="mt-2 font-bold">
-            Send a message on the left to check similarity for different queries
-          </Text>
-          <Text className="mt-2 font-bold">
-            Upload JSON on the right to add embeddings to your index and display
-            them
-          </Text>
+          <FlexBox className="mt-4">
+            <Text>How to query</Text>
+            <Info
+              data-tooltip-id="format info"
+              data-tooltip-html={`<b>2 options</b> <br> 
+            - Send a message on the left to compare similarity to the message you send <br>
+            - Upload JSON on the right to either add embeddings to compare query to
+            them <br>`}
+            >
+              <FiInfo size={16} className="ml-2" />
+            </Info>
+            <ReactTooltip
+              id="format info"
+              style={{ backgroundColor: "black" }}
+            />
+          </FlexBox>
         </div>
       )}
     </PineconeContainer>
@@ -132,4 +143,9 @@ const Button = tw.button`
     rounded-lg
     mt-1
     w-64
+`;
+
+const Info = tw.div`
+  text-sm
+  text-gray-400
 `;

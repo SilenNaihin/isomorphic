@@ -10,7 +10,7 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 import { FiInfo } from "react-icons/fi";
 
 import { type ChatHistoryProps } from "./Content";
-import { Text } from "~/styles/css";
+import { Text, FlexBox } from "~/styles/css";
 
 interface UploadJsonProps {
   oldEmbeddings: number[][];
@@ -42,7 +42,7 @@ const UploadJson: React.FC<UploadJsonProps> = ({
 
         reader.onload = async () => {
           const fileAsBinaryString: string | ArrayBuffer | null = reader.result;
-          let data;
+          let data: any;
 
           if (typeof fileAsBinaryString === "string") {
             data = JSON.parse(fileAsBinaryString) as string;
@@ -71,8 +71,13 @@ const UploadJson: React.FC<UploadJsonProps> = ({
               texts = data;
               embeddedQueries = await embedQueries(texts);
             }
-            // check for an array of vectors, naive check to not slow down processing
-            else if (data.every((item) => typeof item[0] == "number")) {
+            // check for an array of vectors, if first element is a number (naive check) and if the length matches the length of the first vector
+            else if (
+              data.every(
+                (item) =>
+                  typeof item[0] == "number" && item.length == data[0].length
+              )
+            ) {
               embeddedQueries = data;
             } else {
               setUploadStatus("Invalid json format");
@@ -116,7 +121,7 @@ const UploadJson: React.FC<UploadJsonProps> = ({
             data-tooltip-html={`<b>.json file must be formatted as</b> <br> 
             data: [strings] <br>
             data: [{role: '', content: ''}] <br>
-            data: [vectors]`}
+            data: [vectors of same length]`}
           >
             <FiInfo size={16} className="ml-1" />
           </Formats>
@@ -125,9 +130,9 @@ const UploadJson: React.FC<UploadJsonProps> = ({
         <Text className="mt-2 text-red-500">{uploadStatus}</Text>
       </DropZoneContainer>
       {varsExist ? (
-        <CheckboxContainer onClick={() => setPineconeUpload(true)}>
+        <CheckboxContainer onClick={() => setPineconeUpload(!pineconeUpload)}>
           <input
-            onChange={() => console.log("Metadata")}
+            onChange={() => console.log("Pinecone upload")}
             type="checkbox"
             checked={pineconeUpload}
           />
@@ -167,11 +172,6 @@ const Formats = tw.div`
   mt-2
   text-sm
   text-gray-400
-`;
-
-const FlexBox = tw.div`
-  flex
-  items-center
 `;
 
 const CheckboxContainer = tw.div`

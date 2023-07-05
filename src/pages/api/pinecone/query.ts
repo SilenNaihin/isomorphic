@@ -15,7 +15,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       indexName = process.env.PINECONE_INDEX_NAME;
     }
     if (!topK) {
-      topK = 50;
+      topK = 125;
     }
 
     try {

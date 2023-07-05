@@ -6,6 +6,8 @@ import tw from "tailwind-styled-components";
 import { Text } from "~/styles/css";
 import { type QueryVector } from "../pages/index";
 
+import Spinner from "./shared/Spinner";
+
 interface DisplayMapProps {
   embeddings: number[][];
   fullEmbeddings: ScoredVector[];
@@ -21,7 +23,10 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
   queryPoint,
   setGraphLoading,
 }) => {
+  const [firstLoad, setFirstLoad] = useState(true);
+
   const [includeMetadata, setIncludeMetadata] = useState<boolean>(false);
+
   const x = embeddings.map((subArray) => subArray[0]);
   const y = embeddings.map((subArray) => subArray[1]);
   const z = embeddings.map((subArray) => subArray[2]);
@@ -54,6 +59,7 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
     {
       alphahull: 7,
       opacity: 0.1,
+      flatshading: true,
       type: "mesh3d",
       x: x,
       y: y,
@@ -132,26 +138,31 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
 
   return (
     <GraphContainer>
-      {graphLoading ? (
-        <Text className="mx-auto">Example loading...</Text>
-      ) : null}
-      <Plot
-        data={data as any[]}
-        layout={layout as any}
-        onAfterPlot={() => setGraphLoading(false)}
-        style={{ width: "100%", height: "100%" }}
-      />
-      <CheckboxContainer
-        className={`${graphLoading ? "hidden" : ""}`}
-        onClick={() => setIncludeMetadata(!includeMetadata)}
-      >
-        <input
-          onChange={() => console.log("Metadata")}
-          type="checkbox"
-          checked={includeMetadata}
-        />
-        <Text className="ml-1">Include metadata</Text>
-      </CheckboxContainer>
+      <Spinner graphLoading={graphLoading} />
+      {graphLoading && !firstLoad ? null : (
+        <>
+          <Plot
+            data={data as any[]}
+            layout={layout as any}
+            onAfterPlot={() => {
+              setGraphLoading(false);
+              setFirstLoad(false);
+            }}
+            style={{ width: "100%", height: "100%" }}
+          />
+          <CheckboxContainer
+            onClick={() => setIncludeMetadata(!includeMetadata)}
+            className={`${graphLoading ? "hidden" : ""}`}
+          >
+            <input
+              onChange={() => console.log("Metadata")}
+              type="checkbox"
+              checked={includeMetadata}
+            />
+            <Text className="ml-1">Include metadata</Text>
+          </CheckboxContainer>
+        </>
+      )}
     </GraphContainer>
   );
 };
@@ -159,7 +170,7 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
 export default DisplayMap;
 
 const GraphContainer = tw.div`
-  flex h-96 w-96 flex-col items-start justify-center
+  flex w-5/6 flex-col items-center justify-center
 `;
 
 const CheckboxContainer = tw.div`
