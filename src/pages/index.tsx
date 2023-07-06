@@ -1,7 +1,8 @@
 import Head from "next/head";
 import { type NextPage, type GetServerSideProps } from "next";
-import axios from "axios";
+import { ToastContainer } from "react-toastify";
 import { type ScoredVector } from "@pinecone-database/pinecone";
+import "react-toastify/dist/ReactToastify.css";
 
 import tw from "tailwind-styled-components";
 import Header from "../components/Header";
@@ -14,7 +15,7 @@ export interface QueryVector {
   fullVector: number[];
 }
 
-interface ModifiedVector extends ScoredVector {
+export interface ModifiedVector extends ScoredVector {
   position: number;
 }
 
@@ -38,7 +39,7 @@ const Home: NextPage<ContentProps> = ({
       </Head>
       <Main>
         <Header />
-        <MainTitle>Superpower your embeddings</MainTitle>
+        <MainTitle>Chat with your embeddings</MainTitle>
         <Content
           vectors={vectors}
           dataVectorArr={dataVectorArr}
@@ -46,6 +47,7 @@ const Home: NextPage<ContentProps> = ({
         />
         <Footer />
       </Main>
+      <ToastContainer position="bottom-right" />
     </>
   );
 };

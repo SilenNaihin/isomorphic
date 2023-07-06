@@ -73,7 +73,7 @@ const Chat: React.FC<ChatProps> = ({
       setGraphLoading(true);
 
       const embeddingText = previousResponse
-        ? "Previous response:" +
+        ? "Previous response: " +
           previousResponse.content +
           "\n" +
           "User: " +

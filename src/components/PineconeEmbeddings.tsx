@@ -94,10 +94,7 @@ const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
             <Text>How to query</Text>
             <Info
               data-tooltip-id="format info"
-              data-tooltip-html={`<b>2 options</b> <br> 
-            - Send a message on the left to compare similarity to the message you send <br>
-            - Upload JSON on the right to either add embeddings to compare query to
-            them <br>`}
+              data-tooltip-html={`Send a message below to compare similarity to the message you send <br>`}
             >
               <FiInfo size={16} className="ml-2" />
             </Info>
@@ -117,7 +114,7 @@ export default PineconeEmbeddings;
 const PineconeContainer = tw.div`
     flex
     flex-col
-    w-64
+    w-full
     items-center
 `;
 

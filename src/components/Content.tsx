@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import tw from "tailwind-styled-components";
 import axios from "axios";
 
@@ -10,6 +11,7 @@ import UploadJson from "./UploadJson";
 import PineconeEmbeddings from "./PineconeEmbeddings";
 
 import { Text } from "~/styles/css";
+import { type ModifiedVector } from "~/pages/index";
 
 export interface ChatHistoryProps {
   role: string;
@@ -26,14 +28,21 @@ const Content: React.FC<ContentProps> = ({
   dataVectorArr,
   tempQueryVector,
 }) => {
-  const [oldEmbeddings, setOldEmbeddings] = useState<number[][]>(dataVectorArr);
-  const [newEmbeddings, setNewEmbeddings] = useState<number[][]>([[]]);
+  // const [newEmbeddings, setNewEmbeddings] = useState<number[][]>([[]]);
   const [uploadStatus, setUploadStatus] = useState<string>("");
 
+  const [oldEmbeddings, setOldEmbeddings] = useState<number[][]>(dataVectorArr);
   const [queryVector, setQueryVector] = useState<QueryVector>(tempQueryVector);
+  const [fullEmbeddings, setFullEmbeddings] =
+    useState<ModifiedVector[]>(vectors);
 
-  const [metaLearned, setMetaLearned] = useState<boolean>(false);
+  const exampleOldEmbeddings: number[][] = dataVectorArr;
+  const exampleQueryVector: QueryVector = tempQueryVector;
+  const exampleFullEmbeddings: ModifiedVector[] = vectors;
+
+  // const [metaLearned, setMetaLearned] = useState<boolean>(false);
   const [graphLoading, setGraphLoading] = useState<boolean>(true);
+  const [example, setExample] = useState<boolean>(true);
 
   const [env, setEnv] = useState<string>("");
   const [apiKey, setApiKey] = useState<string>("");
@@ -42,6 +51,7 @@ const Content: React.FC<ContentProps> = ({
     DropdownOptions.EXAMPLE
   );
   const [varsExist, setVarsExist] = useState<boolean>(false);
+  const [tempVarsExist, setTempVarsExist] = useState<boolean>(false);
 
   const [chatHistory, setChatHistory] = useState<ChatHistoryProps[]>([
     { content: "How was thy day on the last morrow sir?", role: "user" },
@@ -73,7 +83,7 @@ const Content: React.FC<ContentProps> = ({
   ): Promise<void> => {
     try {
       let res = null;
-      if (!varsExist) {
+      if (!varsExist && !tempVarsExist) {
         res = await axios.post(`/api/pinecone/query`, {
           vector: queryVector,
         });
@@ -86,19 +96,21 @@ const Content: React.FC<ContentProps> = ({
         });
       }
 
+      
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }
+      toast.success('Querying Pinecone successful');
 
       // Extract the query data from the response
       const { dataVectorArr, vectorMatches } = res.data;
-
-      console.log([queryVector, ...dataVectorArr]);
 
       const reducedData = await reducedEmbeddings([
         queryVector,
         ...dataVectorArr,
       ]);
+
+      toast.success('Reducing dimensionality successful, graph loaded');
 
       // const cached = await axios.post(`/api/cache`, {
       //   vectorMatches,
@@ -111,6 +123,7 @@ const Content: React.FC<ContentProps> = ({
 
       const firstVector = reducedData.shift() || [];
 
+      setFullEmbeddings(vectorMatches);
       setOldEmbeddings(reducedData);
       setQueryVector({
         vector: firstVector,
@@ -119,12 +132,7 @@ const Content: React.FC<ContentProps> = ({
       });
     } catch (error: any) {
       console.log(error);
-      // TODO: add larger onload data larger
-      // TODO: test JSON stuff
-      // toast(`Error processing file: ${error.message}`);
-      // using example embeddings, using x index embeddings. dropdown?
-      // mobile responsiveness
-      // twitter + launch
+      toast.error(`Error processing file: ${error.message}`);
       setVarsExist(false);
     }
   };
@@ -164,17 +172,29 @@ const Content: React.FC<ContentProps> = ({
     }
   };
 
+  useEffect(() => {
+    setTempVarsExist(varsExist);
+  }, [varsExist]);
+
+  useEffect(() => {
+    if (selectedOption === DropdownOptions.EXAMPLE) {
+      setExample(true);
+    } else {
+      setTempVarsExist(false);
+    }
+  }, [selectedOption]);
+
   return (
     <ContentContainer>
-      <MapContainer style={{ width: "45%" }}>
+      <MapContainer>
         <DisplayMap
-          fullEmbeddings={vectors}
-          embeddings={oldEmbeddings}
+          fullEmbeddings={example ? exampleFullEmbeddings : fullEmbeddings}
+          embeddings={example ? exampleOldEmbeddings : oldEmbeddings}
           graphLoading={graphLoading}
           setGraphLoading={setGraphLoading}
-          queryPoint={queryVector}
+          queryPoint={example ? exampleQueryVector : queryVector}
         />
-        {metaLearned ? (
+        {/* {metaLearned ? (
           <DisplayMap
             fullEmbeddings={vectors}
             embeddings={newEmbeddings}
@@ -182,15 +202,15 @@ const Content: React.FC<ContentProps> = ({
             setGraphLoading={setGraphLoading}
             queryPoint={queryVector}
           />
-        ) : null}
+        ) : null} */}
       </MapContainer>
-      <ChatContainer style={{ width: "55%" }}>
+      <ChatContainer>
         <SelectContainer>
           <Select
             value={selectedOption}
-            onChange={(e) =>
-              setSelectedOption(e.target.value as DropdownOptions)
-            }
+            onChange={(e) => {
+              setSelectedOption(e.target.value as DropdownOptions);
+            }}
           >
             <option value={DropdownOptions.EXAMPLE}>Example Embeddings</option>
             <option value={DropdownOptions.CUSTOM}>Custom Embeddings</option>
@@ -211,13 +231,13 @@ const Content: React.FC<ContentProps> = ({
                   setApiKey={setApiKey}
                   indexName={indexName}
                   setIndexName={setIndexName}
-                  varsExist={varsExist}
+                  varsExist={varsExist && tempVarsExist}
                   setVarsExist={setVarsExist}
                   setChatHistory={setChatHistory}
                   setOldEmbeddings={setOldEmbeddings}
                   reducedEmbeddings={reducedEmbeddings}
                 />
-                <UploadJson
+                {/* <UploadJson
                   oldEmbeddings={oldEmbeddings}
                   setOldEmbeddings={setOldEmbeddings}
                   uploadStatus={uploadStatus}
@@ -226,7 +246,7 @@ const Content: React.FC<ContentProps> = ({
                   varsExist={varsExist}
                   pineconeUpsert={pineconeUpsert}
                   reducedEmbeddings={reducedEmbeddings}
-                />
+                /> */}
               </UploadContainer>
             )}
           </DropdownContainer>
@@ -236,7 +256,7 @@ const Content: React.FC<ContentProps> = ({
           chatHistory={chatHistory}
           setChatHistory={setChatHistory}
           setGraphLoading={setGraphLoading}
-          varsExist={varsExist}
+          varsExist={varsExist && tempVarsExist}
         />
       </ChatContainer>
     </ContentContainer>
@@ -248,10 +268,15 @@ const MapContainer = tw.div`
   flex-col
   items-center
   justify-center
+  md:w-[45%]
+  w-full
+  h-full
 `;
 
 const ContentContainer = tw.div`
-  flex 
+  flex
+  flex-col
+  md:flex-row 
   items-center
   justify-center
   w-full
@@ -263,7 +288,12 @@ const ChatContainer = tw.div`
   flex-col
   justify-between
   h-full
+  w-full
+  mt-8
+
   px-4
+  md:w-[55%]
+  md:mt-0
 `;
 
 const UploadContainer = tw.div`
@@ -286,8 +316,9 @@ const DropdownContainer = tw.div`
   flex
   items-center
   justify-center
-  h-full
+  md:h-full
   w-full
+  h-64
 `;
 
 const Select = tw.select`

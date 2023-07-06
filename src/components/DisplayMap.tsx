@@ -158,6 +158,13 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
 
   const layout = {
     autosize: true,
+    legend: {
+      x: 1, // This means the legend's x position is at the far right of the graph.
+      y: 1, // This means the legend's y position is at the top of the graph.
+      xanchor: "right", // This will right align the legend relative to the x position.
+      yanchor: "top", // This will top align the legend relative to the y position.
+      bgcolor: "rgba(255,255,255,0.8)", // This makes the legend background semi-transparent.
+    },
     margin: {
       l: 0, // left margin
       r: 0, // right margin
@@ -271,7 +278,14 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
 export default DisplayMap;
 
 const GraphContainer = tw.div`
-  flex w-5/6 flex-col items-center justify-center
+  flex 
+  sm:w-5/6 
+  w-full
+  md:h-full
+  h-96
+  flex-col 
+  items-center 
+  justify-center
 `;
 
 const CheckboxContainer = tw.div`
