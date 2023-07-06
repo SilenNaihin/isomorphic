@@ -58,6 +58,10 @@ const Chat: React.FC<ChatProps> = ({
   };
 
   const respondToChat = async () => {
+    if (userMessage === "") {
+      return;
+    }
+
     try {
       // Pushing the user prompt
       const userPrompt = {

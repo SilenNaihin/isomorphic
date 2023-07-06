@@ -151,7 +151,7 @@ export const DisplayMap: React.FC<DisplayMapProps> = ({
         `<extra></extra>`,
       marker: {
         color: "rgb(255, 0, 0)", // Change color for the query point
-        size: 4,
+        size: 3,
       },
     },
   ];
@@ -281,8 +281,7 @@ const GraphContainer = tw.div`
   flex 
   sm:w-5/6 
   w-full
-  md:h-full
-  h-96
+  h-[456px]
   flex-col 
   items-center 
   justify-center
