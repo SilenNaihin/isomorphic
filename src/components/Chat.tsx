@@ -9,24 +9,7 @@ import axios from "axios";
 
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { FiInfo, FiCheck } from "react-icons/fi";
-
-const splitAtSpaces = (text: string, maxChar: number) => {
-  let parts = [];
-  let currentPart = "";
-
-  text.split(" ").forEach((word) => {
-    if ((currentPart + word).length <= maxChar) {
-      currentPart += " " + word;
-    } else {
-      parts.push(currentPart);
-      currentPart = word;
-    }
-  });
-
-  parts.push(currentPart); // Push the last part into the array
-
-  return parts;
-};
+import { splitAtSpaces } from "~/libs/utils";
 
 import { ChatHistoryProps } from "./Content";
 
@@ -90,7 +73,11 @@ const Chat: React.FC<ChatProps> = ({
       setGraphLoading(true);
 
       const embeddingText = previousResponse
-        ? previousResponse.content + "\n" + userMessage
+        ? "Previous response:" +
+          previousResponse.content +
+          "\n" +
+          "User: " +
+          userMessage
         : userMessage;
 
       console.log("Embedding text: ", embeddingText);
@@ -215,12 +202,14 @@ ${historyContent}`,
           </Info>
           <ReactTooltip id="format info" style={{ backgroundColor: "black" }} />
         </FlexBox>
-
-        {chatHistory.map((msg, index) => (
-          <ResponseText key={index}>
-            <b>{msg.role === "user" ? "User: " : "Response: "}</b> {msg.content}
-          </ResponseText>
-        ))}
+        <HistoryWrapper>
+          {chatHistory.map((msg, index) => (
+            <ResponseText key={index}>
+              <b>{msg.role === "user" ? "User: " : "Response: "}</b>{" "}
+              {msg.content}
+            </ResponseText>
+          ))}
+        </HistoryWrapper>
         <UserInput
           type="text"
           value={userMessage}
@@ -247,8 +236,9 @@ export default Chat;
 
 const ChatContainer = tw.div`
   flex 
-  items-start 
+  items-center 
   justify-center
+  h-3/5
 `;
 
 const ChatWrapper = tw.div`
@@ -300,4 +290,10 @@ const ResponseText = tw(Text)`
 const Info = tw.div`
   text-sm
   text-gray-400
+`;
+
+const HistoryWrapper = tw.div`
+  max-h-60
+  overflow-auto
+  mb-2
 `;

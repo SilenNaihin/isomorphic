@@ -117,7 +117,7 @@ export default PineconeEmbeddings;
 const PineconeContainer = tw.div`
     flex
     flex-col
-    w-1/3
+    w-64
     items-center
 `;
 

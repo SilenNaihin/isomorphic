@@ -12,7 +12,7 @@ export const env = createEnv({
     PINECONE_API_KEY: z.string(),
     PINECONE_ENV: z.string(),
     PINECONE_INDEX_NAME: z.string(),
-    REDUCTION_FUNCTION_URL: z.string(),
+    NEXT_PUBLIC_REDUCE_API_URL: z.string(),
   },
 
   /**
@@ -35,7 +35,7 @@ export const env = createEnv({
     PINECONE_API_KEY: process.env.PINECONE_API_KEY,
     PINECONE_ENV: process.env.PINECONE_ENV,
     PINECONE_INDEX_NAME: process.env.PINECONE_INDEX_NAME,
-    REDUCTION_FUNCTION_URL: process.env.REDUCTION_FUNCTION_URL,
+    NEXT_PUBLIC_REDUCE_API_URL: process.env.NEXT_PUBLIC_REDUCE_API_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

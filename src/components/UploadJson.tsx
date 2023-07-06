@@ -146,7 +146,7 @@ const UploadJson: React.FC<UploadJsonProps> = ({
 export default UploadJson;
 
 const UploadContainer = tw.div`
-  w-1/3
+  w-64
   flex
   flex-col
   items-center

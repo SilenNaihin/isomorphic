@@ -14,9 +14,13 @@ export interface QueryVector {
   fullVector: number[];
 }
 
+interface ModifiedVector extends ScoredVector {
+  position: number;
+}
+
 export interface ContentProps {
   dataVectorArr: number[][];
-  vectors: ScoredVector[];
+  vectors: ModifiedVector[];
   tempQueryVector: QueryVector;
 }
 
@@ -52,7 +56,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       ? "https://isomorphic-alpha.vercel.app"
       : "http://localhost:3000";
 
-  const randomStringToEmbed = "How was your day yesterday?";
+  const randomStringToEmbed = "How was thy day on the last morrow sir?";
 
   // Fetch the cached data from the JSON file in public folder
   const cachedJsonRes = await fetch(`${baseUrl}/cached_vectors.json`);
@@ -78,19 +82,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default Home;
 
 const Main = tw.main`
-  flex 
-  min-h-screen 
-  flex-col
+  grid 
+  min-h-screen
   bg-gradient-to-b 
   from-[#000000] 
   to-[#120F42]
 `;
 
 const MainTitle = tw.h1`
-    text-2xl
-    text-white
-    font-bold
-    mb-12
-    text-center
-    w-full
+  text-2xl
+  text-white
+  font-bold
+  mb-12
+  text-center
+  w-full
 `;
