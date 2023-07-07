@@ -84,9 +84,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       // Merge selections
       vectorMatches = [...firstQuarter, ...middleSelection, ...lastQuarter];
 
-      const dataVectorArr = vectorMatches.map((vector) => vector.values);
-
-      return res.status(200).json({ vectorMatches, dataVectorArr });
+      return res.status(200).json({ vectorMatches });
     } catch (err: any) {
       console.error(err);
       return res.status(500).json({ error: err.message });

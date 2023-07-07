@@ -103,7 +103,8 @@ const Content: React.FC<ContentProps> = ({
       toast.success('Querying Pinecone successful');
 
       // Extract the query data from the response
-      const { dataVectorArr, vectorMatches } = res.data;
+      const { vectorMatches } = res.data;
+      const dataVectorArr = vectorMatches.map((v: ModifiedVector) => v.values);
 
       const reducedData = await reducedEmbeddings([
         queryVector,
@@ -236,6 +237,8 @@ const Content: React.FC<ContentProps> = ({
                   setChatHistory={setChatHistory}
                   setOldEmbeddings={setOldEmbeddings}
                   reducedEmbeddings={reducedEmbeddings}
+                  setFullEmbeddings={setFullEmbeddings}
+                  setQueryVector={setQueryVector}
                 />
                 {/* <UploadJson
                   oldEmbeddings={oldEmbeddings}

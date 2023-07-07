@@ -2,7 +2,7 @@ import React from "react";
 import tw from "tailwind-styled-components";
 import axios from "axios";
 import { type ChatHistoryProps } from "./Content";
-import { type QueryVector } from "../pages/index";
+import { ModifiedVector, type QueryVector } from "../pages/index";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { FiInfo } from "react-icons/fi";
 
@@ -21,6 +21,8 @@ interface PineconeEmbeddingsProps {
   setChatHistory: React.Dispatch<React.SetStateAction<ChatHistoryProps[]>>;
   setOldEmbeddings: React.Dispatch<React.SetStateAction<number[][]>>;
   reducedEmbeddings: (dataVectorArr: number[][]) => Promise<number[][]>;
+  setFullEmbeddings: React.Dispatch<React.SetStateAction<ModifiedVector[]>>;
+  setQueryVector: React.Dispatch<React.SetStateAction<QueryVector>>;
 }
 
 const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
@@ -36,6 +38,8 @@ const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
   setChatHistory,
   setOldEmbeddings,
   reducedEmbeddings,
+  setFullEmbeddings,
+  setQueryVector,
 }) => {
   const handleCheckEmbeddings = async () => {
     console.log(queryVector);
@@ -51,12 +55,24 @@ const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
     }
 
     // Extract the query data from the response
-    const { dataVectorArr } = res.data;
+    const { vectorMatches } = res.data;
+    const dataVectorArr = vectorMatches.map((v: ModifiedVector) => v.values);
 
-    const reducedData = await reducedEmbeddings(dataVectorArr);
+    const reducedData = await reducedEmbeddings([
+      queryVector.fullVector,
+      ...dataVectorArr,
+    ]);
+
+    const firstVector = reducedData.shift() || [];
 
     setVarsExist(true);
     setOldEmbeddings(reducedData);
+    setFullEmbeddings(vectorMatches);
+    setQueryVector({
+      vector: firstVector,
+      text: queryVector.text,
+      fullVector: queryVector.fullVector,
+    });
     setChatHistory([]);
   };
 
