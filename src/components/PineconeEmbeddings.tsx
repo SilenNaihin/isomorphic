@@ -23,6 +23,12 @@ interface PineconeEmbeddingsProps {
   reducedEmbeddings: (dataVectorArr: number[][]) => Promise<number[][]>;
   setFullEmbeddings: React.Dispatch<React.SetStateAction<ModifiedVector[]>>;
   setQueryVector: React.Dispatch<React.SetStateAction<QueryVector>>;
+  setGraphLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  newQueryVector: (
+    vector: number[],
+    text: string,
+    checkVars?: boolean
+  ) => Promise<void>;
 }
 
 const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
@@ -40,40 +46,15 @@ const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
   reducedEmbeddings,
   setFullEmbeddings,
   setQueryVector,
+  setGraphLoading,
+  newQueryVector,
 }) => {
   const handleCheckEmbeddings = async () => {
-    console.log(queryVector);
-    const res = await axios.post(`/api/pinecone/query`, {
-      apiKey: apiKey,
-      environment: env,
-      vector: queryVector.fullVector,
-      indexName: indexName,
-    });
-
-    if (res.status !== 200) {
-      throw new Error(res.statusText);
-    }
-
-    // Extract the query data from the response
-    const { vectorMatches } = res.data;
-    const dataVectorArr = vectorMatches.map((v: ModifiedVector) => v.values);
-
-    const reducedData = await reducedEmbeddings([
-      queryVector.fullVector,
-      ...dataVectorArr,
-    ]);
-
-    const firstVector = reducedData.shift() || [];
+    setGraphLoading(true);
+    await newQueryVector(queryVector.fullVector, queryVector.text, true);
 
     setVarsExist(true);
-    setOldEmbeddings(reducedData);
-    setFullEmbeddings(vectorMatches);
-    setQueryVector({
-      vector: firstVector,
-      text: queryVector.text,
-      fullVector: queryVector.fullVector,
-    });
-    setChatHistory([]);
+    setGraphLoading(false);
   };
 
   return (
@@ -102,15 +83,14 @@ const PineconeEmbeddings: React.FC<PineconeEmbeddingsProps> = ({
         </VarsContainer>
       ) : (
         <div className="w-4/5 text-center">
-          <Text className="mb-2">Variables loaded!</Text>
           <Text>
-            Comparison query: <b>{`'${queryVector.text}'`}</b>
+            <b>Comparison query:</b> <i>{`'${queryVector.text}'`}</i>
           </Text>
           <FlexBox className="mt-4">
             <Text>How to query</Text>
             <Info
               data-tooltip-id="format info"
-              data-tooltip-html={`Send a message below to compare similarity to the message you send <br>`}
+              data-tooltip-html={`Send a message below to query your Pinecone index <br>`}
             >
               <FiInfo size={16} className="ml-2" />
             </Info>

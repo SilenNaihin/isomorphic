@@ -79,11 +79,12 @@ const Content: React.FC<ContentProps> = ({
 
   const newQueryVector = async (
     queryVector: number[],
-    text: string
+    text: string,
+    checkVars?: boolean
   ): Promise<void> => {
     try {
       let res = null;
-      if (!varsExist && !tempVarsExist) {
+      if (!varsExist && !tempVarsExist && !checkVars) {
         res = await axios.post(`/api/pinecone/query`, {
           vector: queryVector,
         });
@@ -96,11 +97,15 @@ const Content: React.FC<ContentProps> = ({
         });
       }
 
-      
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }
-      toast.success('Querying Pinecone successful');
+
+      let pineconeSuccess = "Querying Pinecone successful";
+      if (checkVars) {
+        pineconeSuccess = "Pinecone connection established";
+      }
+      toast.success(pineconeSuccess);
 
       // Extract the query data from the response
       const { vectorMatches } = res.data;
@@ -111,7 +116,7 @@ const Content: React.FC<ContentProps> = ({
         ...dataVectorArr,
       ]);
 
-      toast.success('Reducing dimensionality successful, graph loaded');
+      toast.success("Dimensions reduced, graph loaded");
 
       // const cached = await axios.post(`/api/cache`, {
       //   vectorMatches,
@@ -135,6 +140,7 @@ const Content: React.FC<ContentProps> = ({
       console.log(error);
       toast.error(`Error processing file: ${error.message}`);
       setVarsExist(false);
+      setGraphLoading(false);
     }
   };
 
@@ -179,9 +185,11 @@ const Content: React.FC<ContentProps> = ({
 
   useEffect(() => {
     if (selectedOption === DropdownOptions.EXAMPLE) {
+      setTempVarsExist(false);
       setExample(true);
     } else {
-      setTempVarsExist(false);
+      setTempVarsExist(true);
+      setExample(false);
     }
   }, [selectedOption]);
 
@@ -239,6 +247,8 @@ const Content: React.FC<ContentProps> = ({
                   reducedEmbeddings={reducedEmbeddings}
                   setFullEmbeddings={setFullEmbeddings}
                   setQueryVector={setQueryVector}
+                  setGraphLoading={setGraphLoading}
+                  newQueryVector={newQueryVector}
                 />
                 {/* <UploadJson
                   oldEmbeddings={oldEmbeddings}

@@ -167,7 +167,7 @@ ${historyContent}`,
             Fake chat with
           </Text>
           {isEditing ? (
-            <input
+            <CharacterInput
               type="text"
               value={tempName}
               onChange={(e) => setTempName(e.target.value)}
@@ -179,7 +179,6 @@ ${historyContent}`,
                   ? tempName.length
                   : 1
               }
-              className="border-b border-white bg-transparent text-white outline-none"
             />
           ) : (
             <span
@@ -283,6 +282,16 @@ const ResetButton = tw.button`
   py-1
   px-4
   bg-white
+`;
+
+const CharacterInput = tw.input`
+  border-b 
+  border-white 
+  bg-white
+  bg-opacity-20
+  pl-1
+  text-white 
+  outline-none
 `;
 
 const ResponseText = tw(Text)`
