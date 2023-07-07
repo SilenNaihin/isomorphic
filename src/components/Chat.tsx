@@ -242,6 +242,7 @@ const ChatContainer = tw.div`
   items-center 
   justify-center
   h-3/5
+  mt-4
 `;
 
 const ChatWrapper = tw.div`
@@ -306,7 +307,7 @@ const Info = tw.div`
 `;
 
 const HistoryWrapper = tw.div`
-  max-h-60
+  max-h-48
   overflow-auto
   mb-2
 `;
