@@ -19,10 +19,14 @@ interface PineconeEmbeddingsProps {
   varsExist: boolean;
   setVarsExist: React.Dispatch<React.SetStateAction<boolean>>;
   setChatHistory: React.Dispatch<React.SetStateAction<ChatHistoryProps[]>>;
-  setOldEmbeddings: React.Dispatch<React.SetStateAction<number[][]>>;
+  setOldEmbeddings: React.Dispatch<
+    React.SetStateAction<number[][] | undefined>
+  >;
   reducedEmbeddings: (dataVectorArr: number[][]) => Promise<number[][]>;
-  setFullEmbeddings: React.Dispatch<React.SetStateAction<ModifiedVector[]>>;
-  setQueryVector: React.Dispatch<React.SetStateAction<QueryVector>>;
+  setFullEmbeddings: React.Dispatch<
+    React.SetStateAction<ModifiedVector[] | undefined>
+  >;
+  setQueryVector: React.Dispatch<React.SetStateAction<QueryVector | undefined>>;
   setGraphLoading: React.Dispatch<React.SetStateAction<boolean>>;
   newQueryVector: (
     vector: number[],

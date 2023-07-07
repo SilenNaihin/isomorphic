@@ -31,14 +31,17 @@ const Content: React.FC<ContentProps> = ({
   // const [newEmbeddings, setNewEmbeddings] = useState<number[][]>([[]]);
   const [uploadStatus, setUploadStatus] = useState<string>("");
 
-  const [oldEmbeddings, setOldEmbeddings] = useState<number[][]>(dataVectorArr);
-  const [queryVector, setQueryVector] = useState<QueryVector>(tempQueryVector);
-  const [fullEmbeddings, setFullEmbeddings] =
-    useState<ModifiedVector[]>(vectors);
+  const [oldEmbeddings, setOldEmbeddings] = useState<number[][]>();
+  const [queryVector, setQueryVector] = useState<QueryVector>();
+  const [fullEmbeddings, setFullEmbeddings] = useState<ModifiedVector[]>();
 
-  const exampleOldEmbeddings: number[][] = dataVectorArr;
-  const exampleQueryVector: QueryVector = tempQueryVector;
-  const exampleFullEmbeddings: ModifiedVector[] = vectors;
+  const [exampleOldEmbeddings, setExampleOldEmbeddings] =
+    useState<number[][]>(dataVectorArr);
+  const [exampleQueryVector, setExampleQueryVector] =
+    useState<QueryVector>(tempQueryVector);
+  const [exampleFullEmbeddings, setExampleFullEmbeddings] =
+    useState<ModifiedVector[]>(vectors);
+  vectors;
 
   // const [metaLearned, setMetaLearned] = useState<boolean>(false);
   const [graphLoading, setGraphLoading] = useState<boolean>(true);
@@ -84,17 +87,19 @@ const Content: React.FC<ContentProps> = ({
   ): Promise<void> => {
     try {
       let res = null;
-      if (!varsExist && !tempVarsExist && !checkVars) {
+      if (!checkVars && (example || !varsExist)) {
         res = await axios.post(`/api/pinecone/query`, {
           vector: queryVector,
         });
-      } else {
+      } else if ((varsExist || (apiKey && env && indexName)) && !example) {
         res = await axios.post(`/api/pinecone/query`, {
           apiKey: apiKey,
           environment: env,
           vector: queryVector,
           indexName: indexName,
         });
+      } else {
+        throw new Error("Pinecone variables not set");
       }
 
       if (res.status !== 200) {
@@ -104,6 +109,7 @@ const Content: React.FC<ContentProps> = ({
       let pineconeSuccess = "Querying Pinecone successful";
       if (checkVars) {
         pineconeSuccess = "Pinecone connection established";
+        setVarsExist(true);
       }
       toast.success(pineconeSuccess);
 
@@ -127,15 +133,25 @@ const Content: React.FC<ContentProps> = ({
 
       // console.log(cached);
 
-      const firstVector = reducedData.shift() || [];
+      const firstVector = reducedData[0] || [];
 
-      setFullEmbeddings(vectorMatches);
-      setOldEmbeddings(reducedData);
-      setQueryVector({
-        vector: firstVector,
-        text: text,
-        fullVector: queryVector,
-      });
+      if (example) {
+        setExampleOldEmbeddings(reducedData.slice(1));
+        setExampleQueryVector({
+          vector: firstVector,
+          text: text,
+          fullVector: queryVector,
+        });
+        setExampleFullEmbeddings(vectorMatches.slice(1));
+      } else {
+        setFullEmbeddings(vectorMatches.slice(1));
+        setOldEmbeddings(reducedData.slice(1));
+        setQueryVector({
+          vector: firstVector,
+          text: text,
+          fullVector: queryVector,
+        });
+      }
     } catch (error: any) {
       console.log(error);
       toast.error(`Error processing file: ${error.message}`);
@@ -197,11 +213,17 @@ const Content: React.FC<ContentProps> = ({
     <ContentContainer>
       <MapContainer>
         <DisplayMap
-          fullEmbeddings={example ? exampleFullEmbeddings : fullEmbeddings}
-          embeddings={example ? exampleOldEmbeddings : oldEmbeddings}
+          fullEmbeddings={
+            !example && fullEmbeddings ? fullEmbeddings : exampleFullEmbeddings
+          }
+          embeddings={
+            !example && oldEmbeddings ? oldEmbeddings : exampleOldEmbeddings
+          }
           graphLoading={graphLoading}
           setGraphLoading={setGraphLoading}
-          queryPoint={example ? exampleQueryVector : queryVector}
+          queryPoint={
+            !example && queryVector ? queryVector : exampleQueryVector
+          }
         />
         {/* {metaLearned ? (
           <DisplayMap
@@ -233,7 +255,7 @@ const Content: React.FC<ContentProps> = ({
             ) : (
               <UploadContainer>
                 <PineconeEmbeddings
-                  queryVector={queryVector}
+                  queryVector={queryVector ? queryVector : exampleQueryVector}
                   env={env}
                   setEnv={setEnv}
                   apiKey={apiKey}
