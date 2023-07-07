@@ -1,28 +1,44 @@
-# Create T3 App
+# Isomorphic
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## Description
 
-## What's next? How do I make an app with this?
+Isomorphic is a visualization tool designed to simplify exploration of high-dimensional data. Explore your Pinecone embeddings using a web-based UI to project and interact with a readily understandable 3D view. Key features include:
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- Exploration of individual data points. Metadata can be chosen to be included
+- PCA reduction for graphing using a AWS Lambda function
+- Viewing strati and positions of points in the latent space by similarity
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+The graph is preloaded with a demo Pinecone index featuring embeddings for over 400 poems from authors like Shakespeare.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Usage
 
-## Learn More
+How to start exploring your embeddings
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+**1. Access the Application:**
+Visit [Isomorphic](https://isomorphic-alpha.vercel.app/)
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+**2. View the graph and the example queries:**
+There are preloaded queries already present in the graph that loads based on poems.
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+**3. Query the example index:**
+Chat with the example embeddings. When you send a message, relevant queries are drawn from Pinecone and reduced using PCA in order to graph.
 
-## How do I deploy this?
+**4. Use your own Pinecone index:**
+Select custom embeddings from the dropdown and enter your index information. When you click submit, the previous messages will be used to query this graph.
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+**5. Change who interacts with the latent space:**
+
+You can change who you're chatting to and view the prompt by clicking on 'William Shakespeare' and changing the name.
+
+## Installation
+
+Isomorphic is an open-source project, and we welcome contributions. To set up the project locally:
+
+1. Clone the repository: `git clone <repository_url>`
+2. Navigate into the project directory: `cd isomorphic`
+3. Install the dependencies: `npm install`
+4. Copy the environment file and populate the necessary fields: `cp .env.example .env`. Note: For the `REDUCTION_FUNCTION_URL`, you will need a route that can handle PCA. If you need help with this, feel free to send us a message.
+
+## Get Help
+
+Happy to help out, just message me via [Twitter](https://twitter.com/silennai)
